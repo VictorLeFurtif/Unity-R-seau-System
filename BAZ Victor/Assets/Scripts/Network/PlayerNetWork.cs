@@ -15,6 +15,9 @@ namespace Network
         [SerializeField] private float moveSpeed = 10f;
         private Vector3 direction;
 
+        [SerializeField] private GameObject prefab;
+        [SerializeField] private Transform spawnedObjectTransform;
+
         [Header("Key")] [SerializeField] private KeyCode leftKey = KeyCode.A;
         [Header("Key")] [SerializeField] private KeyCode rightKey = KeyCode.D;
         [Header("Key")] [SerializeField] private KeyCode upKey = KeyCode.W;
@@ -43,16 +46,13 @@ namespace Network
             
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                //randomNumber.Value = Random.Range(0, 100);
-                /*
-                playerData.Value = new PlayerData()
-                {
-                    life = Random.Range(0, 100),
-                    stunt = playerData.Value.stunt,
-                    message = "Praise the sun"
-                };*/
                 
-                TestRpc(new RpcParams());
+                TestRpc();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                DestroyObjectRpc();
             }
             
             Shift();
@@ -63,6 +63,12 @@ namespace Network
 
         #region PlayerNetwork Methods
 
+        [Rpc(SendTo.Server)]
+        private void DestroyObjectRpc()
+        {
+            spawnedObjectTransform.GetComponent<NetworkObject>().Despawn();
+        }
+        
         private void Shift()
         {
             direction = Vector3.zero;
@@ -90,10 +96,13 @@ namespace Network
         }
 
         
-        [Rpc(SendTo.NotServer)]
-        private void TestRpc(RpcParams rpcParams)
+        [Rpc(SendTo.Server)]
+        private void TestRpc()
         {
-            Debug.Log("TestRpc " + OwnerClientId + "RPC params : " +rpcParams.Receive.SenderClientId);
+             spawnedObjectTransform = Instantiate(prefab,transform.position 
+                                                                  + new Vector3(0,Random.Range(2,3f),0),Quaternion.identity).transform;
+            spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
+            
         }
 
         #endregion
