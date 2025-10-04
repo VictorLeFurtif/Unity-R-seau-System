@@ -32,6 +32,14 @@ namespace UI
             buttonServer?.onClick.AddListener(()=> NetworkManager.Singleton.StartServer());
             buttonHost?.onClick.AddListener(()=> NetworkManager.Singleton.StartHost());
             buttonClient?.onClick.AddListener(()=> NetworkManager.Singleton.StartClient());
+            buttonServer?.onClick.AddListener(OnTEST);
+            buttonHost?.onClick.AddListener(OnTEST);
+            buttonClient?.onClick.AddListener(OnTEST);
+        }
+
+        private void OnTEST()
+        {
+            Debug.Log("TEST");
         }
 
         #endregion

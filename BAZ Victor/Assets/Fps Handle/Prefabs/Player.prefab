@@ -123,9 +123,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6796493819363346879}
   - component: {fileID: 7879115089744365265}
+  - component: {fileID: 7034168686765762237}
   - component: {fileID: 1538744894867250417}
   - component: {fileID: 7358305207641302277}
   - component: {fileID: 8252128347484232759}
+  - component: {fileID: 8757935678360184470}
+  - component: {fileID: 8781621808844603233}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -178,6 +181,31 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
+--- !u!114 &7034168686765762237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3155184323162596834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3539160304
+  InScenePlacedSourceGlobalObjectIdHash: 3539160304
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &1538744894867250417
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,14 +218,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad4bc0719ed13741bff6e125ba66903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedText: {fileID: 0}
-  stateText: {fileID: 0}
-  tempoData: {fileID: 11400000, guid: 3dba1e060e725894984b78b72623092f, type: 2}
-  finalData:
-    sprintSpeed: 0
-    walkSpeed: 0
+  ShowTopMostFoldoutHeaderGroup: 1
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
+  walkSpeed: 7
+  sprintSpeed: 10
   slideSpeed: 30
   wallRunningSpeed: 15
   orientation: {fileID: 7528028126745704621}
@@ -219,7 +244,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   maxSlopeAngle: 60
-  cameraController: {fileID: 0}
   grappleFov: 95
 --- !u!114 &7358305207641302277
 MonoBehaviour:
@@ -233,6 +257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1e097eff1ef4c46ab3428d252b8f74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   orientation: {fileID: 7528028126745704621}
   playerObj: {fileID: 2692869516701570358}
   maxSlideTime: 0.75
@@ -250,6 +275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dca21c6ec0b35754fb2afa9abe08f15b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
   wallLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -264,10 +290,72 @@ MonoBehaviour:
   wallCheckDistance: 0.7
   minJumpHeight: 2
   orientation: {fileID: 7528028126745704621}
-  cameraController: {fileID: 0}
   exitWallTime: 0.2
   useGravity: 1
   gravityCounterForce: 1
+--- !u!114 &8757935678360184470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3155184323162596834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 1
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 1
+  SyncScaleY: 1
+  SyncScaleZ: 1
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
+--- !u!114 &8781621808844603233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3155184323162596834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkRigidbodyBaseExpanded: 0
+  UseRigidBodyForMotion: 0
+  AutoUpdateKinematicState: 1
+  AutoSetKinematicOnDespawn: 1
 --- !u!1 &4663171132925652926
 GameObject:
   m_ObjectHideFlags: 0

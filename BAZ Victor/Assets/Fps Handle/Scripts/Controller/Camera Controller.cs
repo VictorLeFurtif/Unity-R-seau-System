@@ -1,11 +1,18 @@
 using DG.Tweening;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Fps_Handle.Scripts.Controller
 {
-    public class CameraController : MonoBehaviour
+    public class CameraController : NetworkBehaviour
     {
+        #region Singleton
+
+        public static CameraController Instance { get; private set; }
+
+        #endregion
+
         #region Variable
 
         [Header("Parameters")]
@@ -13,7 +20,7 @@ namespace Fps_Handle.Scripts.Controller
         [SerializeField] private float sensX;
         [SerializeField] private float sensY;
 
-        [SerializeField] private Transform orientation;
+        private Transform orientation;
         [SerializeField] private Transform camHolder;
 
         private float xRotation;
@@ -27,14 +34,29 @@ namespace Fps_Handle.Scripts.Controller
         private PlayerInputActions inputActions;
         private Vector2 lookInput;
 
+        private Transform currentTarget; 
+
         #endregion
 
         #region Unity Methods
+        
 
         private void Awake() 
         {
+            
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
+            Instance = this;
+           
+            
             inputActions = new PlayerInputActions();
         }
+
+        
 
         private void OnEnable() 
         {
@@ -51,22 +73,42 @@ namespace Fps_Handle.Scripts.Controller
         private void Start()
         {
             InitCursor();
-            transform.localRotation = Quaternion.identity;
         }
 
         private void Update()
         {
-            MouseController();
+            if (currentTarget != null)
+            {
+                MouseController();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (currentTarget != null)
+            {
+                transform.position = currentTarget.position;
+            }
         }
 
         #endregion
 
-        #region Initi Methods
+        #region Initialization Methods
 
         private void InitCursor()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+        }
+        
+        public void FollowTarget(Transform target, Transform targetOrientation)
+        {
+            currentTarget = target;
+            orientation = targetOrientation;
+            
+            xRotation = 0;
+            yRotation = 0;
+            
         }
 
         #endregion
@@ -83,24 +125,31 @@ namespace Fps_Handle.Scripts.Controller
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90, 90);
             
-            camHolder.rotation = Quaternion.Euler(xRotation,yRotation,0);
-            orientation.rotation = Quaternion.Euler(0,yRotation,0);
+            if (camHolder != null)
+                camHolder.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+            
+            if (orientation != null)
+                orientation.rotation = Quaternion.Euler(0, yRotation, 0);
         }
 
         public void DoFov(float endValue)
         {
-            cameraPlayer.DOFieldOfView(endValue, 0.25f);
+            if (cameraPlayer != null)
+                cameraPlayer.DOFieldOfView(endValue, 0.25f);
         }
 
         public void DoTile(float zTilt)
         {
-            transform.DOLocalRotate(new Vector3(0, 0, zTilt),0.25f);
+            transform.DOLocalRotate(new Vector3(0, 0, zTilt), 0.25f);
         }
 
         public void ToggleSpeedCameraEffect(bool condition)
         {
-            cameraSpeedEffect.SetActive(condition);
-            effectSpeed = condition;
+            if (cameraSpeedEffect != null)
+            {
+                cameraSpeedEffect.SetActive(condition);
+                effectSpeed = condition;
+            }
         }
 
         public bool EffectSpeedActive()

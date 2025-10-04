@@ -1,8 +1,9 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Fps_Handle.Scripts.Controller
 {
-    public class WallRunning : MonoBehaviour
+    public class WallRunning : NetworkBehaviour
     {
         #region Fields
 
@@ -21,6 +22,7 @@ namespace Fps_Handle.Scripts.Controller
         private float verticalInput;
         private bool upwardRunning;
         private bool downwardRunning;
+        
 
         [Header("Detection")] 
         [SerializeField] private float wallCheckDistance;
@@ -34,7 +36,7 @@ namespace Fps_Handle.Scripts.Controller
         [SerializeField] private Transform orientation;
         private PlayerController pc;
         private Rigidbody rb;
-        [SerializeField] private CameraController cameraController;
+        
 
         [Header("Exiting")] 
         private bool exitingWall;
@@ -53,14 +55,19 @@ namespace Fps_Handle.Scripts.Controller
         #endregion
 
         #region Unity Methods
+        
 
-        private void Awake() 
+        public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
+            
+            if (!IsOwner)
+            {
+                return;
+            }
+            
             inputActions = new PlayerInputActions();
-        }
-
-        private void OnEnable() 
-        {
+            
             inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
             inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
             
@@ -76,9 +83,29 @@ namespace Fps_Handle.Scripts.Controller
             inputActions.Enable();
         }
 
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+            
+            if (IsOwner && inputActions != null)
+            {
+                inputActions.Disable();
+                inputActions.Dispose(); 
+                inputActions = null;
+            }
+        }
+
+        private void OnEnable() 
+        {
+            
+        }
+
         private void OnDisable() 
         {
-            inputActions.Disable();
+            if (inputActions != null)
+            {
+                inputActions.Disable();
+            }
         }
 
         private void Start()
@@ -88,12 +115,22 @@ namespace Fps_Handle.Scripts.Controller
 
         private void Update()
         {
+            if (!IsOwner)
+            {
+                return;
+            }
+            
             CheckForWall();
             StateMachine();
         }
 
         private void FixedUpdate()
         {
+            if (!IsOwner)
+            {
+                return;
+            }
+            
             if (pc.GetWallRunning())
             {
                 WallRunningMovement();
@@ -187,29 +224,37 @@ namespace Fps_Handle.Scripts.Controller
 
         private void StartWallRunning()
         {
-            pc.SetterBoolWallRunning(true);
             wallrunTimer = maxWallRunTime;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             
-            cameraController.DoFov(90f);
+            CameraController.Instance.DoFov(90f);
             
             
             if (wallLeft)
             {
-                cameraController.DoTile(-5f);
+                CameraController.Instance.DoTile(-5f);
             }
 
             if (wallRight)
             {
-                cameraController.DoTile(5f);
+                CameraController.Instance.DoTile(5f);
+            }
+
+            if (IsOwner)
+            {
+                StartWallRunningRpc();
             }
         }
 
         private void StopWallRunning()
         {
-            pc.SetterBoolWallRunning(false);
-            cameraController.DoFov(80f);
-            cameraController.DoTile(0);
+            CameraController.Instance.DoFov(80f);
+            CameraController.Instance.DoTile(0);
+            
+            if (IsOwner)
+            {
+                StopWallRunningRpc();
+            }
         }
 
         private void WallRunningMovement()
@@ -261,6 +306,22 @@ namespace Fps_Handle.Scripts.Controller
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(forceToApply,ForceMode.Impulse);
+        }
+
+        #endregion
+
+        #region Network Methods
+
+        [Rpc(SendTo.NotMe)]
+        private void StartWallRunningRpc()
+        {
+            pc.SetterBoolWallRunning(true);
+        }
+        
+        [Rpc(SendTo.NotMe)]
+        private void StopWallRunningRpc()
+        {
+            pc.SetterBoolWallRunning(false);
         }
 
         #endregion

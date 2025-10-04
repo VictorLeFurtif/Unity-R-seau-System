@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Unity.Netcode;
 
 namespace Fps_Handle.Scripts.Controller
 {
-    public class Sliding : MonoBehaviour
+    public class Sliding : NetworkBehaviour
     {
         #region Fields
 
@@ -14,18 +17,16 @@ namespace Fps_Handle.Scripts.Controller
         private PlayerController pc;
 
         [Header("Sliding")] 
-        [SerializeField] private float maxSlideTime;
-        [SerializeField] private float slideForce;
+        [SerializeField] private float maxSlideTime = 1.5f;
+        [SerializeField] private float slideForce = 200f;
         private float slideTimer;
         
-        [SerializeField] private float slideYScale;
+        [SerializeField] private float slideYScale = 0.5f;
         private float startYScale;
 
-        
-        [Header("Input")] 
         private float horizontalInput;
         private float verticalInput;
-
+        
         private PlayerInputActions inputActions;
         private Vector2 moveInput;
         private bool slidePressed;
@@ -39,8 +40,14 @@ namespace Fps_Handle.Scripts.Controller
             inputActions = new PlayerInputActions();
         }
 
-        private void OnEnable()
+        public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
+            
+            if (!IsOwner) return;
+
+            inputActions = new PlayerInputActions();
+            
             inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
             inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
             
@@ -50,11 +57,19 @@ namespace Fps_Handle.Scripts.Controller
             inputActions.Enable();
         }
 
-        private void OnDisable() 
+        public override void OnNetworkDespawn()
         {
-            inputActions.Disable();
+            base.OnNetworkDespawn();
+            
+            if (IsOwner && inputActions != null)
+            {
+                inputActions.Disable();
+                inputActions.Dispose(); 
+                inputActions = null;
+            }
         }
-
+        
+        
         private void Start()
         {
             InitComponent();
@@ -62,11 +77,15 @@ namespace Fps_Handle.Scripts.Controller
 
         private void Update()
         {
+            if (!IsOwner) return;
+
             InputMovement();
         }
 
         private void FixedUpdate()
         {
+            if (!IsOwner) return;
+
             if (pc.GetSliding())
             {
                 SlidingMovement();
@@ -115,9 +134,15 @@ namespace Fps_Handle.Scripts.Controller
         private void StartSlide()
         {
             pc.SetterBoolSliding(true);
-            playerObj.localScale = new Vector3(playerObj.localScale.x,slideYScale, playerObj.localScale.z);
+            
+            playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
             slideTimer = maxSlideTime;
+
+            if (IsOwner)
+            {
+                StartSlideRpc();
+            }
         }
 
         private void SlidingMovement()
@@ -132,7 +157,7 @@ namespace Fps_Handle.Scripts.Controller
             }
             else
             {
-                rb.AddForce(pc.GetSlopeMoveDirection(inputDirection) * slideForce,ForceMode.Force);
+                rb.AddForce(pc.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force);
             }
             
             if (slideTimer <= 0)
@@ -144,6 +169,28 @@ namespace Fps_Handle.Scripts.Controller
         private void StopSlide()
         {
             pc.SetterBoolSliding(false);
+            
+            playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
+
+            if (IsOwner)
+            {
+                StopSlideRpc();
+            }
+        }
+
+        #endregion
+
+        #region Network RPCs 
+
+        [Rpc(SendTo.NotMe)]
+        private void StartSlideRpc()
+        {
+            playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
+        }
+
+        [Rpc(SendTo.NotMe)]
+        private void StopSlideRpc()
+        {
             playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
         }
 

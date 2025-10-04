@@ -59,8 +59,7 @@ namespace Network
         }
         
         #endregion
-
-
+        
         #region PlayerNetwork Methods
 
         [Rpc(SendTo.Server)]
