@@ -34,11 +34,7 @@ namespace Fps_Handle.Scripts.Controller
         #endregion
 
         #region Unity Methods
-
-        private void Awake()
-        {
-            inputActions = new PlayerInputActions();
-        }
+        
 
         public override void OnNetworkSpawn()
         {

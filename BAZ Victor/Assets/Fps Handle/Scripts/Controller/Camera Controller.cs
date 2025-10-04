@@ -15,10 +15,6 @@ namespace Fps_Handle.Scripts.Controller
 
         #region Variable
 
-        [Header("Parameters")]
-        
-        [SerializeField] private float sensX;
-        [SerializeField] private float sensY;
 
         private Transform orientation;
         [SerializeField] private Transform camHolder;
@@ -30,9 +26,6 @@ namespace Fps_Handle.Scripts.Controller
 
         [SerializeField] private GameObject cameraSpeedEffect;
         private bool effectSpeed = false;
-
-        private PlayerInputActions inputActions;
-        private Vector2 lookInput;
 
         private Transform currentTarget; 
 
@@ -51,37 +44,17 @@ namespace Fps_Handle.Scripts.Controller
             }
             
             Instance = this;
-           
             
-            inputActions = new PlayerInputActions();
         }
 
         
-
-        private void OnEnable() 
-        {
-            inputActions.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
-            inputActions.Player.Look.canceled += ctx => lookInput = Vector2.zero;
-            inputActions.Enable();
-        }
-
-        private void OnDisable() 
-        {
-            inputActions.Disable();
-        }
+        
 
         private void Start()
         {
             InitCursor();
         }
-
-        private void Update()
-        {
-            if (currentTarget != null)
-            {
-                MouseController();
-            }
-        }
+        
 
         private void LateUpdate()
         {
@@ -115,7 +88,7 @@ namespace Fps_Handle.Scripts.Controller
 
         #region Mouse Control
 
-        private void MouseController()
+        public void MouseController(Vector2 lookInput, float sensX, float sensY)
         {
             float mouseX = lookInput.x * Time.deltaTime * sensX;
             float mouseY = lookInput.y * Time.deltaTime * sensY;

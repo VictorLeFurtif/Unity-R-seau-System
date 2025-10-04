@@ -94,19 +94,8 @@ namespace Fps_Handle.Scripts.Controller
                 inputActions = null;
             }
         }
-
-        private void OnEnable() 
-        {
-            
-        }
-
-        private void OnDisable() 
-        {
-            if (inputActions != null)
-            {
-                inputActions.Disable();
-            }
-        }
+        
+        
 
         private void Start()
         {

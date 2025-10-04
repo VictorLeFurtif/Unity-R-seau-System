@@ -89,6 +89,10 @@ namespace Fps_Handle.Scripts.Controller
         private bool jumpPressed;
         private bool sprintHeld;
         private bool crouchHeld;
+        private Vector2 lookInput;
+
+        [SerializeField] private float sensX = 100f;
+        [SerializeField] private float sensY = 100f;
 
         #endregion
 
@@ -113,6 +117,9 @@ namespace Fps_Handle.Scripts.Controller
                 
                 inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
                 inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+                
+                inputActions.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
+                inputActions.Player.Look.canceled += ctx => lookInput = Vector2.zero;
             
                 inputActions.Player.Jump.performed += ctx => jumpPressed = true;
                 inputActions.Player.Jump.canceled += ctx => jumpPressed = false;
@@ -132,6 +139,8 @@ namespace Fps_Handle.Scripts.Controller
         {
             base.OnNetworkDespawn();
     
+            StopAllCoroutines();
+            
             if (IsOwner && inputActions != null)
             {
                 inputActions.Disable();
@@ -143,19 +152,18 @@ namespace Fps_Handle.Scripts.Controller
         void Start()
         {
             InitComponent();
-            
         }
         
         void Update()
         {
             if (!IsOwner) return;
 
+            CameraController.Instance?.MouseController(lookInput,sensX,sensY);
             MyInput();
             SpeedControl();
             StateHandler();
             Drag();
             
-            Debug.DrawRay(centerPlayer.position, (Vector3.down * playerHeight * 0.5f) + new Vector3(0, 0.2f, 0), Color.red, 1);
             
         }
 
