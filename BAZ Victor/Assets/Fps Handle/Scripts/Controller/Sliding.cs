@@ -29,7 +29,7 @@ namespace Fps_Handle.Scripts.Controller
         
         private PlayerInputActions inputActions;
         private Vector2 moveInput;
-        private bool slidePressed;
+        //private bool slidePressed;
         
         #endregion
 
@@ -111,7 +111,7 @@ namespace Fps_Handle.Scripts.Controller
 
         private void OnSlidePressed()
         {
-            slidePressed = true;
+            //slidePressed = true;
             if ((horizontalInput != 0 || verticalInput != 0) && !pc.GetWallRunning())
             {
                 StartSlide();
@@ -120,7 +120,7 @@ namespace Fps_Handle.Scripts.Controller
 
         private void OnSlideReleased()
         {
-            slidePressed = false;
+            //slidePressed = false;
             if (pc.GetSliding())
             {
                 StopSlide();

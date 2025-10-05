@@ -82,7 +82,6 @@ namespace Fps_Handle.Scripts.Controller
         private CameraController cameraController;
 
         [Header("Camera Effect")] 
-        [SerializeField] private float grappleFov = 95f;
 
         private PlayerInputActions inputActions;
         private Vector2 moveInput;
@@ -163,8 +162,6 @@ namespace Fps_Handle.Scripts.Controller
             SpeedControl();
             StateHandler();
             Drag();
-            
-            
         }
 
         private void FixedUpdate()
@@ -277,7 +274,9 @@ namespace Fps_Handle.Scripts.Controller
                     rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
                 }
             }
-
+            
+            /*
+            
             if (cameraController != null)
             {
                 if (rb.linearVelocity.magnitude > sprintSpeed)
@@ -291,7 +290,7 @@ namespace Fps_Handle.Scripts.Controller
                 {
                     cameraController.ToggleSpeedCameraEffect(false);
                 }
-            }
+            }*/
         }
 
         public bool IsGrounded() 

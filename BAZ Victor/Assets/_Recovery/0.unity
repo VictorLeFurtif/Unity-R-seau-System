@@ -378,10 +378,7 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5449513402905909268, guid: 5cbf44bbac0260c4b8496558c78aa9c9, type: 3}
-    - {fileID: 4228529143232261652, guid: 5cbf44bbac0260c4b8496558c78aa9c9, type: 3}
-    - {fileID: 5510889741988882224, guid: 5cbf44bbac0260c4b8496558c78aa9c9, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5cbf44bbac0260c4b8496558c78aa9c9, type: 3}
@@ -393,10 +390,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2060112988614293161, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2591160189759914446, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
       propertyPath: orientation
       value: 
@@ -528,7 +521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 871517797
+  GlobalObjectIdHash: 545075987
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -654,22 +647,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 881887887539651961, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 881887887539651961, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 881887887539651961, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 881887887539651961, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1001220847647418736, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -748,38 +725,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1001220847647418736, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2701184788694943614, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2701184788694943614, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2701184788694943614, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2701184788694943614, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4883550921942459470, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4883550921942459470, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4883550921942459470, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4883550921942459470, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
-      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7585083105371290942, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}

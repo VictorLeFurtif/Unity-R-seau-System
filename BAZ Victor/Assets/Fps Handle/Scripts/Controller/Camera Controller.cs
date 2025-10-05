@@ -44,11 +44,7 @@ namespace Fps_Handle.Scripts.Controller
             }
             
             Instance = this;
-            
         }
-
-        
-        
 
         private void Start()
         {
