@@ -27,11 +27,11 @@ Transform:
   m_GameObject: {fileID: 2060112988614293161}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.23, z: 1.54}
+  m_LocalPosition: {x: 0, y: -0.2299999, z: 1.54}
   m_LocalScale: {x: 0.11, y: 0.11, z: 0.11}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 7648849269675126358}
+  m_Father: {fileID: 5435953474064902322}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &5149261632744545493
 ParticleSystem:
@@ -4848,6 +4848,7 @@ GameObject:
   - component: {fileID: 182571269281218672}
   - component: {fileID: 7718063198789140927}
   - component: {fileID: 1397717667446428236}
+  - component: {fileID: 4354693911248811447}
   - component: {fileID: 2591160189759914446}
   m_Layer: 0
   m_Name: Main Camera
@@ -4870,6 +4871,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2770591440357667661}
+  - {fileID: 7611947495876627028}
   m_Father: {fileID: 7648849269675126358}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &182571269281218672
@@ -4975,6 +4977,31 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &4354693911248811447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6844415323068130734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 871517797
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &2591160189759914446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4987,9 +5014,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bded3c1f43495a489681323dc2a267a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensX: 100
-  sensY: 100
-  orientation: {fileID: 0}
+  ShowTopMostFoldoutHeaderGroup: 1
   camHolder: {fileID: 7648849269675126358}
   cameraPlayer: {fileID: 182571269281218672}
   cameraSpeedEffect: {fileID: 2060112988614293161}
@@ -5023,7 +5048,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5435953474064902322}
-  - {fileID: 7611947495876627028}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8402533238131379035

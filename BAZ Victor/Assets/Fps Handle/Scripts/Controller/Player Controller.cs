@@ -275,8 +275,8 @@ namespace Fps_Handle.Scripts.Controller
                 }
             }
             
-            /*
             
+            /*
             if (cameraController != null)
             {
                 if (rb.linearVelocity.magnitude > sprintSpeed)

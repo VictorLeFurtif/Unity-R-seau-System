@@ -1,4 +1,6 @@
 using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -25,7 +27,7 @@ namespace Fps_Handle.Scripts.Controller
         [FormerlySerializedAs("camera")] [SerializeField] private Camera cameraPlayer;
 
         [SerializeField] private GameObject cameraSpeedEffect;
-        private bool effectSpeed = false;
+        private bool isEffectSpeed = false;
 
         private Transform currentTarget; 
 
@@ -49,6 +51,7 @@ namespace Fps_Handle.Scripts.Controller
         private void Start()
         {
             InitCursor();
+            ToggleSpeedCameraEffect(false);
         }
         
 
@@ -66,9 +69,10 @@ namespace Fps_Handle.Scripts.Controller
 
         private void InitCursor()
         {
-            //Cursor.lockState = CursorLockMode.Locked;
-            //Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
+        
         
         public void FollowTarget(Transform target, Transform targetOrientation)
         {
@@ -107,23 +111,25 @@ namespace Fps_Handle.Scripts.Controller
                 cameraPlayer.DOFieldOfView(endValue, 0.25f);
         }
 
+        private TweenerCore<Quaternion, Vector3, QuaternionOptions> _tweenerRotationZCamera;
         public void DoTile(float zTilt)
         {
-            transform.DOLocalRotate(new Vector3(0, 0, zTilt), 0.25f);
+            _tweenerRotationZCamera.Kill();
+            _tweenerRotationZCamera = transform.DOLocalRotate(new Vector3(0, 0, zTilt), 0.5f);
         }
 
-        public void ToggleSpeedCameraEffect(bool condition)
+        public void ToggleSpeedCameraEffect(bool active)
         {
             if (cameraSpeedEffect != null)
             {
-                cameraSpeedEffect.SetActive(condition);
-                effectSpeed = condition;
+                cameraSpeedEffect.SetActive(active);
+                isEffectSpeed = active;
             }
         }
 
         public bool EffectSpeedActive()
         {
-            return effectSpeed;
+            return isEffectSpeed;
         }
         
         #endregion

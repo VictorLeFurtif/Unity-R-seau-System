@@ -235,7 +235,7 @@ MonoBehaviour:
   wallRunning: 0
   crouchSpeed: 3.5
   crouchYScale: 0.5
-  jumpForce: 12
+  jumpForce: 10
   jumpCooldown: 0.2
   airMultiplier: 1
   centerPlayer: {fileID: 2692869516701570358}
@@ -244,7 +244,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   maxSlopeAngle: 60
-  grappleFov: 95
+  sensX: 50
+  sensY: 50
 --- !u!114 &7358305207641302277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,7 +338,7 @@ MonoBehaviour:
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
   SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0
 --- !u!114 &8781621808844603233
 MonoBehaviour:
@@ -353,7 +354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
   ShowTopMostFoldoutHeaderGroup: 1
   NetworkRigidbodyBaseExpanded: 0
-  UseRigidBodyForMotion: 0
+  UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
 --- !u!1 &4663171132925652926

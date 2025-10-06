@@ -214,6 +214,7 @@ namespace Fps_Handle.Scripts.Controller
         private void StartWallRunning()
         {
             wallrunTimer = maxWallRunTime;
+            pc.SetterBoolWallRunning(true);
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             
             CameraController.Instance.DoFov(90f);
@@ -239,6 +240,7 @@ namespace Fps_Handle.Scripts.Controller
         {
             CameraController.Instance.DoFov(80f);
             CameraController.Instance.DoTile(0);
+            pc.SetterBoolWallRunning(false);
             
             if (IsOwner)
             {
