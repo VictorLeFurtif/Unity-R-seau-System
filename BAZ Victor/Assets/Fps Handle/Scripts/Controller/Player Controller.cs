@@ -241,11 +241,11 @@ namespace Fps_Handle.Scripts.Controller
             }
             else if (grounded)
             {
-                rb.AddForce(moveDirection.normalized * moveSpeed * 10f , ForceMode.Force);
+                rb.AddForce(moveDirection.normalized * moveSpeed * 9f , ForceMode.Force);
             }
             else if (!grounded)
             {
-                rb.AddForce(moveDirection.normalized * moveSpeed * airMultiplier * 10f, ForceMode.Force);
+                rb.AddForce(moveDirection.normalized * moveSpeed * airMultiplier * 9f, ForceMode.Force);
             }
 
             if (!wallRunning)
@@ -433,25 +433,13 @@ namespace Fps_Handle.Scripts.Controller
         
         #endregion
 
-        #region UI
-
-        private void DisplayText(TMP_Text _text, string _content)
-        {
-            _text.text = _content;
-        }
-
-        #endregion
 
         #region Utility
 
         public void SetterBoolSliding(bool _result) => sliding = _result;
         public void SetterBoolWallRunning(bool _result) => wallRunning = _result;
-        public void SetterBoolFreezing(bool _result) => frozen = _result;
-        
         public bool GetSliding() => sliding;
         public bool GetWallRunning() => wallRunning;
-        public bool GetFreezingState() => frozen;
-
         public MovementState GetMovementState() => currentMovementState;
         public Transform GetOrientation() => orientation;
         public Rigidbody GetPlayerRigidbody() => rb;
