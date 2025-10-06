@@ -227,21 +227,25 @@ namespace Fps_Handle.Scripts.Controller
             
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-            if (OnSlope() && !exitingSlope)
+            if (OnSlope() && !exitingSlope) 
             {
-                rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
+                
+                rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 10f, ForceMode.Force);
+                
+                rb.useGravity = rb.linearVelocity.y > 0;
+                /*
                 if (rb.linearVelocity.y > 0)
                 {
                     rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-                }
+                }*/
             }
             else if (grounded)
             {
-                rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+                rb.AddForce(moveDirection.normalized * moveSpeed * 10f , ForceMode.Force);
             }
             else if (!grounded)
             {
-                rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+                rb.AddForce(moveDirection.normalized * moveSpeed * airMultiplier * 10f, ForceMode.Force);
             }
 
             if (!wallRunning)

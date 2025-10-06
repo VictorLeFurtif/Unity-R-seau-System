@@ -153,7 +153,7 @@ namespace Fps_Handle.Scripts.Controller
             }
             else
             {
-                rb.AddForce(pc.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force);
+                rb.AddForce(pc.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force); // on slope TODO fix
             }
             
             if (slideTimer <= 0)

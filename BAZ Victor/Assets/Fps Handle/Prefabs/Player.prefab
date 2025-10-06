@@ -221,8 +221,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
-  walkSpeed: 7
-  sprintSpeed: 10
+  walkSpeed: 9
+  sprintSpeed: 15
   slideSpeed: 30
   wallRunningSpeed: 15
   orientation: {fileID: 7528028126745704621}
@@ -235,9 +235,9 @@ MonoBehaviour:
   wallRunning: 0
   crouchSpeed: 3.5
   crouchYScale: 0.5
-  jumpForce: 10
+  jumpForce: 20
   jumpCooldown: 0.2
-  airMultiplier: 1
+  airMultiplier: 1.1
   centerPlayer: {fileID: 2692869516701570358}
   playerHeight: 2
   groundLayer:
@@ -286,8 +286,8 @@ MonoBehaviour:
   wallRunForce: 200
   maxWallRunTime: 1
   wallClimbSpeed: 2
-  wallJumpUpForce: 10
-  wallJumpSideForce: 40
+  wallJumpUpForce: 25
+  wallJumpSideForce: 50
   wallCheckDistance: 0.7
   minJumpHeight: 2
   orientation: {fileID: 7528028126745704621}
