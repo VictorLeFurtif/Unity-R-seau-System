@@ -280,7 +280,7 @@ namespace Fps_Handle.Scripts.Controller
             }
             
             
-            /*
+            
             if (cameraController != null)
             {
                 if (rb.linearVelocity.magnitude > sprintSpeed)
@@ -294,7 +294,7 @@ namespace Fps_Handle.Scripts.Controller
                 {
                     cameraController.ToggleSpeedCameraEffect(false);
                 }
-            }*/
+            }
         }
 
         public bool IsGrounded() 

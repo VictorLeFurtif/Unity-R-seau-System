@@ -235,7 +235,7 @@ MonoBehaviour:
   wallRunning: 0
   crouchSpeed: 3.5
   crouchYScale: 0.5
-  jumpForce: 20
+  jumpForce: 10
   jumpCooldown: 0.2
   airMultiplier: 1.1
   centerPlayer: {fileID: 2692869516701570358}
