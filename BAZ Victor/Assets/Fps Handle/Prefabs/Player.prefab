@@ -252,23 +252,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  wallRunForce: 200
-  maxWallRunTime: 1
-  wallClimbSpeed: 2
-  wallJumpUpForce: 15
-  wallJumpSideForce: 50
-  wallCheckDistance: 0.7
-  minJumpHeight: 2
+  data: {fileID: 11400000, guid: 865ac312cda2495448be77db3b812315, type: 2}
   orientation: {fileID: 7528028126745704621}
-  exitWallTime: 0.2
-  useGravity: 1
-  gravityCounterForce: 1
 --- !u!114 &8757935678360184470
 MonoBehaviour:
   m_ObjectHideFlags: 0

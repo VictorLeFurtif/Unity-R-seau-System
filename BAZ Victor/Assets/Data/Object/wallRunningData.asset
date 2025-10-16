@@ -21,8 +21,8 @@ MonoBehaviour:
   <WallRunForce>k__BackingField: 200
   <MaxWallRunTime>k__BackingField: 1
   <WallClimbSpeed>k__BackingField: 2
-  <WallJumpUpForce>k__BackingField: 15
-  <WallJumpSideForce>k__BackingField: 50
+  <WallJumpUpForce>k__BackingField: 10
+  <WallJumpSideForce>k__BackingField: 30
   <WallCheckDistance>k__BackingField: 0.7
   <MinJumpHeight>k__BackingField: 2
   <ExitWallTime>k__BackingField: 0.2
