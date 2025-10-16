@@ -201,6 +201,7 @@ namespace Fps_Handle.Scripts.Controller
 
         private void StartWallRunning()
         {
+            jumpPressed = false; // think is necessary because need to press again space to jump?
             wallrunTimer = data.MaxWallRunTime;
             pc.SetterBoolWallRunning(true);
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);

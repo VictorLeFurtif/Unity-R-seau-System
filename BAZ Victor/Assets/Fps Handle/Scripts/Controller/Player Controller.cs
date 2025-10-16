@@ -172,7 +172,7 @@ namespace Fps_Handle.Scripts.Controller
             if (jumpPressed && readyToJump && grounded && currentMovementState != MovementState.Crouching)
             {
                 readyToJump = false;
-                
+                jumpPressed = false; //necessary for cancel space spammer !!
                 Jump();
                 Invoke(nameof(ResetJump), data.JumpCooldown);
             }
