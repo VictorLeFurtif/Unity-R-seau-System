@@ -1,3 +1,4 @@
+using Data.Scripts;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -7,26 +8,17 @@ namespace Fps_Handle.Scripts.Controller
     {
         #region Fields
 
-        [Header("Wall Running")] 
-        [SerializeField] private LayerMask wallLayer;
-        [SerializeField] private LayerMask groundLayer;
-        [SerializeField] private float wallRunForce;
-        [SerializeField] private float maxWallRunTime;
+        [SerializeField] private WallRunningData data;
+        
         private float wallrunTimer;
-        [SerializeField] private float wallClimbSpeed;
-        [SerializeField] private float wallJumpUpForce;
-        [SerializeField] private float wallJumpSideForce;
 
         [Header("Input")] 
         private float horizontalInput;
         private float verticalInput;
         private bool upwardRunning;
         private bool downwardRunning;
-        
 
         [Header("Detection")] 
-        [SerializeField] private float wallCheckDistance;
-        [SerializeField] private float minJumpHeight;
         private RaycastHit leftWallhit;
         private RaycastHit rightWallhit;
         private bool wallLeft;
@@ -40,13 +32,7 @@ namespace Fps_Handle.Scripts.Controller
 
         [Header("Exiting")] 
         private bool exitingWall;
-        [SerializeField] private float exitWallTime;
         private float exitWallTimer;
-
-        [Header("Gravity")] 
-        [SerializeField] private bool useGravity;
-
-        [SerializeField] private float gravityCounterForce;
 
         private PlayerInputActions inputActions;
         private Vector2 moveInput;
@@ -142,13 +128,15 @@ namespace Fps_Handle.Scripts.Controller
 
         private void CheckForWall()
         {
-            wallRight = Physics.Raycast(transform.position, orientation.right, out rightWallhit, wallCheckDistance, wallLayer);
-            wallLeft = Physics.Raycast(transform.position, -orientation.right, out leftWallhit, wallCheckDistance, wallLayer);
+            wallRight = Physics.Raycast(transform.position, orientation.right,
+                out rightWallhit, data.WallCheckDistance, data.WallLayer);
+            wallLeft = Physics.Raycast(transform.position, -orientation.right, 
+                out leftWallhit, data.WallCheckDistance, data.WallLayer);
         }
 
         private bool AboveGround()
         {
-            return !Physics.Raycast(transform.position, Vector3.down, minJumpHeight, groundLayer);
+            return !Physics.Raycast(transform.position, Vector3.down, data.MinJumpHeight, data.GroundLayer);
         }
 
         private void StateMachine()
@@ -170,7 +158,7 @@ namespace Fps_Handle.Scripts.Controller
                 if (wallrunTimer <= 0 && pc.GetWallRunning())
                 {
                     exitingWall = true;
-                    exitWallTimer = exitWallTime;
+                    exitWallTimer = data.ExitWallTime;
                 }
                 
                 if (jumpPressed)
@@ -213,7 +201,7 @@ namespace Fps_Handle.Scripts.Controller
 
         private void StartWallRunning()
         {
-            wallrunTimer = maxWallRunTime;
+            wallrunTimer = data.MaxWallRunTime;
             pc.SetterBoolWallRunning(true);
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             
@@ -250,7 +238,7 @@ namespace Fps_Handle.Scripts.Controller
 
         private void WallRunningMovement()
         {
-            rb.useGravity = useGravity;
+            rb.useGravity = data.UseGravity;
             
             Vector3 wallNormal = wallRight ? rightWallhit.normal : leftWallhit.normal;
             Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
@@ -260,16 +248,16 @@ namespace Fps_Handle.Scripts.Controller
                 wallForward = -wallForward;
             }
             
-            rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
+            rb.AddForce(wallForward * data.WallRunForce, ForceMode.Force);
 
             if (upwardRunning)
             {
-                rb.linearVelocity = new Vector3(rb.linearVelocity.x,wallClimbSpeed, rb.linearVelocity.z);
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x,data.WallClimbSpeed, rb.linearVelocity.z);
             }
             
             if (downwardRunning)
             {
-                rb.linearVelocity = new Vector3(rb.linearVelocity.x,-wallClimbSpeed, rb.linearVelocity.z);
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x,-data.WallClimbSpeed, rb.linearVelocity.z);
             }
             
             if (!(wallLeft && horizontalInput > 0 ) && !(wallRight && horizontalInput < 0 ))
@@ -277,9 +265,9 @@ namespace Fps_Handle.Scripts.Controller
                 rb.AddForce(-wallNormal * 100,ForceMode.Force);
             }
 
-            if (useGravity)
+            if (data.UseGravity)
             {
-                rb.AddForce(transform.up * gravityCounterForce,ForceMode.Force);
+                rb.AddForce(transform.up * data.GravityCounterForce,ForceMode.Force);
             }
         }
         
@@ -290,10 +278,10 @@ namespace Fps_Handle.Scripts.Controller
         private void WallJump()
         {
             exitingWall = true;
-            exitWallTimer = exitWallTime;
+            exitWallTimer = data.ExitWallTime;
             
             Vector3 wallNormal = wallRight ? rightWallhit.normal : leftWallhit.normal;
-            Vector3 forceToApply = transform.up * wallJumpUpForce + wallNormal * wallJumpSideForce;
+            Vector3 forceToApply = transform.up * data.WallJumpUpForce + wallNormal * data.WallJumpSideForce;
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.AddForce(forceToApply,ForceMode.Impulse);

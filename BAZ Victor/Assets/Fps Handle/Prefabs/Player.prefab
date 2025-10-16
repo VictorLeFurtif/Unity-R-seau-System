@@ -219,33 +219,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  speedIncreaseMultiplier: 1.5
-  slopeIncreaseMultiplier: 2.5
-  walkSpeed: 9
-  sprintSpeed: 15
-  slideSpeed: 30
-  wallRunningSpeed: 15
+  data: {fileID: 11400000, guid: de612a9f2e1f5c1428473625a4befb16, type: 2}
   orientation: {fileID: 7528028126745704621}
   rb: {fileID: 7879115089744365265}
-  groundDrag: 4
-  currentMovementState: 0
-  activeGrapple: 0
-  frozen: 0
-  sliding: 0
-  wallRunning: 0
-  crouchSpeed: 3.5
-  crouchYScale: 0.5
-  jumpForce: 10
-  jumpCooldown: 0.2
-  airMultiplier: 1.1
   centerPlayer: {fileID: 2692869516701570358}
-  playerHeight: 2
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  maxSlopeAngle: 60
-  sensX: 50
-  sensY: 50
 --- !u!114 &7358305207641302277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,9 +238,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   orientation: {fileID: 7528028126745704621}
   playerObj: {fileID: 2692869516701570358}
-  maxSlideTime: 0.75
-  slideForce: 400
-  slideYScale: 0.5
+  data: {fileID: 11400000, guid: 8e07b316ee9f3b842ba7c844d9ace231, type: 2}
 --- !u!114 &8252128347484232759
 MonoBehaviour:
   m_ObjectHideFlags: 0

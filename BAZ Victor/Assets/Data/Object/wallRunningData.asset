@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 215fce8cad31408d962cf568a28641e7, type: 3}
+  m_Name: wallRunningData
+  m_EditorClassIdentifier: Assembly-CSharp::Data.Scripts.WallRunningData
+  <WallLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 8
+  <GroundLayer>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 64
+  <WallRunForce>k__BackingField: 200
+  <MaxWallRunTime>k__BackingField: 1
+  <WallClimbSpeed>k__BackingField: 2
+  <WallJumpUpForce>k__BackingField: 15
+  <WallJumpSideForce>k__BackingField: 50
+  <WallCheckDistance>k__BackingField: 0.7
+  <MinJumpHeight>k__BackingField: 2
+  <ExitWallTime>k__BackingField: 0.2
+  <UseGravity>k__BackingField: 1
+  <GravityCounterForce>k__BackingField: 1

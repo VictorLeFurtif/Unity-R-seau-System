@@ -1,4 +1,5 @@
 using System;
+using Data.Scripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
@@ -12,16 +13,13 @@ namespace Fps_Handle.Scripts.Controller
         [Header("References")]
         [SerializeField] private Transform orientation;
         [SerializeField] private Transform playerObj;
+        [SerializeField] private SlidingData data;
 
         private Rigidbody rb;
         private PlayerController pc;
 
-        [Header("Sliding")] 
-        [SerializeField] private float maxSlideTime = 1.5f;
-        [SerializeField] private float slideForce = 200f;
         private float slideTimer;
         
-        [SerializeField] private float slideYScale = 0.5f;
         private float startYScale;
 
         private float horizontalInput;
@@ -29,7 +27,6 @@ namespace Fps_Handle.Scripts.Controller
         
         private PlayerInputActions inputActions;
         private Vector2 moveInput;
-        //private bool slidePressed;
         
         #endregion
 
@@ -131,9 +128,9 @@ namespace Fps_Handle.Scripts.Controller
         {
             pc.SetterBoolSliding(true);
             
-            playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
+            playerObj.localScale = new Vector3(playerObj.localScale.x, data.SlideYScale, playerObj.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-            slideTimer = maxSlideTime;
+            slideTimer = data.MaxSlideTime;
 
             if (IsOwner)
             {
@@ -147,13 +144,13 @@ namespace Fps_Handle.Scripts.Controller
 
             if (!pc.OnSlope() || rb.linearVelocity.y > -0.1f)
             {
-                rb.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
+                rb.AddForce(inputDirection.normalized * data.SlideForce, ForceMode.Force);
 
                 slideTimer -= Time.deltaTime;
             }
             else
             {
-                rb.AddForce(pc.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force); // on slope TODO fix
+                rb.AddForce(pc.GetSlopeMoveDirection(inputDirection) * data.SlideForce, ForceMode.Force); // on slope TODO fix
             }
             
             if (slideTimer <= 0)
@@ -181,7 +178,7 @@ namespace Fps_Handle.Scripts.Controller
         [Rpc(SendTo.NotMe)]
         private void StartSlideRpc()
         {
-            playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
+            playerObj.localScale = new Vector3(playerObj.localScale.x, data.SlideYScale, playerObj.localScale.z);
         }
 
         [Rpc(SendTo.NotMe)]

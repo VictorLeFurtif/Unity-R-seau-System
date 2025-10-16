@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Data.Scripts;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,32 +12,22 @@ namespace Fps_Handle.Scripts.Controller
     {
         #region Variable
         
-        [Header("Movement")] 
-        private float moveSpeed;
-
-        public float speedIncreaseMultiplier;
-        public float slopeIncreaseMultiplier;
+        [SerializeField] private PlayerControllerData data;
         
-        [SerializeField] private float walkSpeed = 7f;
-        [SerializeField] private float sprintSpeed = 10f;
-        [SerializeField] private float slideSpeed = 20f;
-        [SerializeField] private float wallRunningSpeed = 8.5f;
-
+        private float moveSpeed;
         private float desiredMoveSpeed;
         private float lastDesiredMoveSpeed;
         
-        [SerializeField] private Transform orientation;
+        [SerializeField] private Transform orientation; //cant change
 
         private float horizontalInput;
         private float verticalInput;
 
         private Vector3 moveDirection;
 
-        [SerializeField] private Rigidbody rb;
+        [SerializeField] private Rigidbody rb; //cant change
 
-        [SerializeField] private float groundDrag = 5f;
-
-        [SerializeField] private MovementState currentMovementState = MovementState.Walking;
+        private MovementState currentMovementState = MovementState.Walking;
 
         public enum MovementState
         {
@@ -49,36 +40,21 @@ namespace Fps_Handle.Scripts.Controller
             Freeze
         }
 
-        [SerializeField] private bool activeGrapple;
-        [SerializeField] private bool frozen;
-        [SerializeField] private bool sliding;
-        [SerializeField] private bool wallRunning;
+        private bool activeGrapple;
+        private bool frozen;
+        private bool sliding;
+        private bool wallRunning;
         
-        [Header("Crouching")] 
-        [SerializeField] private float crouchSpeed = 3.5f;
-        [SerializeField] private float crouchYScale = 0.5f;
         private float startYScale;
         
-        [Header("Jump")] 
-        [SerializeField] private float jumpForce = 12f;
-        [SerializeField] private float jumpCooldown = 0.25f;
-        [SerializeField] private float airMultiplier = 0.4f;
-        [SerializeField] private Transform centerPlayer;
+        [SerializeField] private Transform centerPlayer; //cant change
         private bool readyToJump = true;
-        
-        [Header("Ground Check")] 
-        [SerializeField] private float playerHeight = 2f;
-
-        [SerializeField] private LayerMask groundLayer;
 
         private bool grounded;
-
-        [Header("Slope Handling")] 
-        [SerializeField] private float maxSlopeAngle = 40f;
+        
         private RaycastHit slopeHit;
         private bool exitingSlope;
-
-        [Header("Reference")] 
+        
         private CameraController cameraController;
 
         [Header("Camera Effect")] 
@@ -89,9 +65,6 @@ namespace Fps_Handle.Scripts.Controller
         private bool sprintHeld;
         private bool crouchHeld;
         private Vector2 lookInput;
-
-        [SerializeField] private float sensX = 100f;
-        [SerializeField] private float sensY = 100f;
 
         #endregion
 
@@ -157,7 +130,7 @@ namespace Fps_Handle.Scripts.Controller
         {
             if (!IsOwner) return;
 
-            CameraController.Instance?.MouseController(lookInput,sensX,sensY);
+            CameraController.Instance?.MouseController(lookInput,data.SensX,data.SensY);
             MyInput();
             SpeedControl();
             StateHandler();
@@ -201,14 +174,14 @@ namespace Fps_Handle.Scripts.Controller
                 readyToJump = false;
                 
                 Jump();
-                Invoke(nameof(ResetJump), jumpCooldown);
+                Invoke(nameof(ResetJump), data.JumpCooldown);
             }
         }
 
         private void OnCrouchPressed()
         {
             crouchHeld = true;
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            transform.localScale = new Vector3(transform.localScale.x, data.CrouchYScale, transform.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
 
@@ -245,7 +218,7 @@ namespace Fps_Handle.Scripts.Controller
             }
             else if (!grounded)
             {
-                rb.AddForce(moveDirection.normalized * moveSpeed * airMultiplier * 9f, ForceMode.Force);
+                rb.AddForce(moveDirection.normalized * moveSpeed * data.AirMultiplier * 9f, ForceMode.Force);
             }
 
             if (!wallRunning)
@@ -283,7 +256,7 @@ namespace Fps_Handle.Scripts.Controller
             
             if (cameraController != null)
             {
-                if (rb.linearVelocity.magnitude > sprintSpeed)
+                if (rb.linearVelocity.magnitude > data.SprintSpeed)
                 {
                     if (!cameraController.EffectSpeedActive())
                     {
@@ -297,16 +270,17 @@ namespace Fps_Handle.Scripts.Controller
             }
         }
 
-        public bool IsGrounded() 
+        private bool IsGrounded() 
         {
-            return grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
+            return grounded = Physics.Raycast(transform.position, Vector3.down
+                , data.PlayerHeight * 0.5f + 0.2f, data.GroundLayer);
         }
 
         private void Drag()
         {
             if (IsGrounded() && !activeGrapple)
             {
-                rb.linearDamping = groundDrag;
+                rb.linearDamping = data.GroundDrag;
             }
             else
             {
@@ -318,7 +292,7 @@ namespace Fps_Handle.Scripts.Controller
         {
             exitingSlope = true;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * data.JumpForce, ForceMode.Impulse);
         }
 
         private void ResetJump()
@@ -338,31 +312,31 @@ namespace Fps_Handle.Scripts.Controller
             else if (wallRunning)
             {
                 currentMovementState = MovementState.WallRunning;
-                desiredMoveSpeed = wallRunningSpeed;
+                desiredMoveSpeed = data.WallRunningSpeed;
             }
             else if (sliding)
             {
                 currentMovementState = MovementState.Sliding;
 
                 if (OnSlope() && rb.linearVelocity.y < 0.1f)
-                    desiredMoveSpeed = slideSpeed;
+                    desiredMoveSpeed = data.SlideSpeed;
                 else
-                    desiredMoveSpeed = sprintSpeed;
+                    desiredMoveSpeed = data.SprintSpeed;
             }
             else if (crouchHeld)
             {
                 currentMovementState = MovementState.Crouching;
-                desiredMoveSpeed = crouchSpeed;
+                desiredMoveSpeed = data.CrouchSpeed;
             }
             else if (grounded && sprintHeld)
             {
                 currentMovementState = MovementState.Sprinting;
-                desiredMoveSpeed = sprintSpeed;
+                desiredMoveSpeed = data.SprintSpeed;
             }
             else if (grounded)
             {
                 currentMovementState = MovementState.Walking;
-                desiredMoveSpeed = walkSpeed;
+                desiredMoveSpeed = data.WalkSpeed;
             }
             else
             {
@@ -397,11 +371,11 @@ namespace Fps_Handle.Scripts.Controller
                     float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
                     float slopeAngleIncrease = 1 + (slopeAngle / 90f);
 
-                    time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
+                    time += Time.deltaTime * data.SpeedIncreaseMultiplier * data.SlopeIncreaseMultiplier * slopeAngleIncrease;
                 }
                 else
                 {
-                    time += Time.deltaTime * speedIncreaseMultiplier;
+                    time += Time.deltaTime * data.SpeedIncreaseMultiplier;
                 }
                 yield return null;
             }
@@ -417,10 +391,10 @@ namespace Fps_Handle.Scripts.Controller
         
         public bool OnSlope()
         { 
-            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f))
+            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, data.PlayerHeight * 0.5f + 0.2f))
             {
                 float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-                return angle < maxSlopeAngle && angle != 0;
+                return angle < data.MaxSlopeAngle && angle != 0;
             }
 
             return false;
