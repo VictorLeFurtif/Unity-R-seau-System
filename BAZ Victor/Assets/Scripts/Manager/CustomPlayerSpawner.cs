@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Manager
 {
-    public class CustomPlayerSpawner : MonoBehaviour
+    public class CustomPlayerSpawner : NetworkBehaviour
     {
         [Header("Prefabs")]
         [SerializeField] private GameObject seekerPrefab;
@@ -12,7 +12,7 @@ namespace Manager
         private void OnEnable()
         {
             if (NetworkManager.Singleton == null) return;
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected; // même aps call je crois
         }
 
         private void OnDisable()
@@ -23,7 +23,11 @@ namespace Manager
 
         private void OnClientConnected(ulong clientId)
         {
-            Debug.Log("Fonctionne ou Conséquence");
+            if (!IsOwner)
+            {
+                return;
+            }
+            
             var prefabToSpawn = NetworkManager.Singleton.IsHost && clientId == NetworkManager.Singleton.LocalClientId
                 ? seekerPrefab
                 : hiderPrefab;
