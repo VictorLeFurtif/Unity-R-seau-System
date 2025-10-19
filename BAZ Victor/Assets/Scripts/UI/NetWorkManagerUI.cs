@@ -34,6 +34,8 @@ namespace UI
             buttonClient?.onClick.AddListener(()=> NetworkManager.Singleton.StartClient());
         }
         
+        
+        
 
         #endregion
         

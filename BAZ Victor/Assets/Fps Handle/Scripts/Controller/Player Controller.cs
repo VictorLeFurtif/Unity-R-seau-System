@@ -12,7 +12,7 @@ namespace Fps_Handle.Scripts.Controller
     {
         #region Variable
 
-        private bool canMove = false;
+        private bool canMove = true;
         
         [SerializeField] private PlayerControllerData data;
         

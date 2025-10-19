@@ -10,7 +10,6 @@ namespace Manager
         #region Fields
 
         [SerializeField] private Transform orientation;
-        [SerializeField] private Transform hitOrigin;
         [SerializeField] private float rangeAttack;
 
         private bool isAttacking = false;
@@ -62,7 +61,7 @@ namespace Manager
             isAttacking = true;
             Invoke(nameof(ResetAttack),attackResetTime);
             
-            if (Physics.Raycast(hitOrigin.position, orientation.forward, out hit, rangeAttack))
+            if (Physics.Raycast(orientation.position, orientation.forward, out hit, rangeAttack))
             {
                 PlayerGameBehavior hitPlayer = hit.transform.GetComponent<PlayerGameBehavior>();
                 
