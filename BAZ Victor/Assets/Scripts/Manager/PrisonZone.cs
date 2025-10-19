@@ -1,0 +1,130 @@
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
+
+namespace Manager
+{
+    public class PrisonZone : NetworkBehaviour
+    {
+        #region Fields
+
+        private float defaultProgression = 100f;
+
+        private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(100f);
+        private NetworkVariable<int> prisonerCount = new NetworkVariable<int>(0);
+        private NetworkVariable<bool> releasing = new NetworkVariable<bool>(false);
+        
+        private Queue<PlayerGameBehavior> prisonerQueue = new Queue<PlayerGameBehavior>();
+        private List<PlayerGameBehavior> hiderReleasing = new List<PlayerGameBehavior>();
+
+        #endregion
+
+        #region Unity Methods
+
+        private void Update()
+        {
+            if (!IsServer) return; 
+            
+            TryReleasingPlayer();
+        }
+
+        #endregion
+
+        #region Physics Methods
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (!IsServer) return; 
+            
+            if (!other.CompareTag("Hider")) return;
+            
+            PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
+            if (hider == null || hider.IsImprisoned()) return;
+            
+            
+            if (!hiderReleasing.Contains(hider))
+            {
+                hiderReleasing.Add(hider);
+            }
+            
+            StartReleasePlayer();
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (!IsServer) return; 
+            
+            if (!other.CompareTag("Hider")) return;
+            
+            PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
+            if (hider == null || hider.IsImprisoned()) return;
+            
+            hiderReleasing.Remove(hider);
+
+            if (hiderReleasing.Count <= 0)
+            {
+                StopTryReleasePlayer();
+            }
+        }
+
+        #endregion
+
+        #region Prison Methods
+        
+        public void AddPrisoner(PlayerGameBehavior prisoner)
+        {
+            if (!IsServer) return; 
+            
+            prisonerQueue.Enqueue(prisoner);
+            prisonerCount.Value = prisonerQueue.Count; 
+        }
+        
+        private void StartReleasePlayer()
+        {
+            releasing.Value = true;
+        }
+        
+        private void StopTryReleasePlayer()
+        {
+            releaseProgression.Value = defaultProgression;
+            releasing.Value = false;
+        }
+        
+        private void TryReleasingPlayer()
+        {
+            if (!releasing.Value || prisonerQueue.Count == 0) return;
+
+            releaseProgression.Value -= Time.deltaTime;
+            
+            if (releaseProgression.Value <= 0)
+            {
+                ReleasePlayer();
+            }
+        }
+        
+        private void ReleasePlayer()
+        {
+            if (prisonerQueue.Count == 0) return;
+            
+            PlayerGameBehavior freedPrisoner = prisonerQueue.Dequeue();
+            freedPrisoner.SetImprisoned(false); 
+            
+            prisonerCount.Value = prisonerQueue.Count; 
+            ResetZoneAfterRelease();
+        }
+        
+        private void ResetZoneAfterRelease()
+        {
+            releaseProgression.Value = defaultProgression;
+        }
+
+        #endregion
+
+        #region Getter Setter
+
+        public int GetPrisonerCount() => prisonerCount.Value; 
+        public float GetReleaseProgress() => releaseProgression.Value; 
+
+        #endregion
+    }
+}

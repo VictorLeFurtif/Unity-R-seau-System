@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "PlayerInputActions",
     "maps": [
         {
@@ -54,6 +55,15 @@
                     "name": "Slide",
                     "type": "Button",
                     "id": "ee77c9f8-e029-41eb-8081-bdc2acd4df25",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "e35646e3-eabe-49c8-97ca-9a9ab911246f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -170,6 +180,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "ca48bb7a-1ee3-478c-a038-579e3c37a51c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
