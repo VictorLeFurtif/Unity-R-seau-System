@@ -318,6 +318,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Prison
       objectReference: {fileID: 0}
+    - target: {fileID: 4863733619152372558, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_TagString
+      value: Prison
+      objectReference: {fileID: 0}
     - target: {fileID: 5151364670270673844, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3662327144

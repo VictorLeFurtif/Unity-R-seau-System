@@ -130,9 +130,12 @@ namespace Fps_Handle.Scripts.Controller
         
         void Update()
         {
-            if (!IsOwner || !canMove) return;
+            if (!IsOwner) return;
 
             CameraController.Instance?.MouseController(lookInput,data.SensX,data.SensY);
+
+            if (!canMove) return;
+            
             MyInput();
             SpeedControl();
             StateHandler();
@@ -409,6 +412,7 @@ namespace Fps_Handle.Scripts.Controller
 
         public void ResetVelocity()
         {
+            
             rb.linearVelocity = new Vector3(0,0,0);
         }
         

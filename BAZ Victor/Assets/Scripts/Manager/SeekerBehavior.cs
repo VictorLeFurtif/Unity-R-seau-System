@@ -17,6 +17,8 @@ namespace Manager
         [SerializeField] private float attackResetTime = 1f;
         
         private PlayerInputActions inputActions;
+
+        [SerializeField] private LayerMask seekerLayer;
         
         #endregion
 
@@ -61,15 +63,19 @@ namespace Manager
             isAttacking = true;
             Invoke(nameof(ResetAttack),attackResetTime);
             
-            if (Physics.Raycast(orientation.position, orientation.forward, out hit, rangeAttack))
+            if (Physics.Raycast(orientation.position, orientation.forward, out hit, rangeAttack, ~seekerLayer))
             {
                 PlayerGameBehavior hitPlayer = hit.transform.GetComponent<PlayerGameBehavior>();
                 
                 //hit a hider not in prison
                 if (hitPlayer != null && !hitPlayer.IsSeeker() && !hitPlayer.IsImprisoned()) 
                 {
+                    Debug.Log("YOU HIT A PLAYER WELL DONE");
                     hitPlayer.SetImprisoned(true);
+                    return;
                 }
+                
+                Debug.Log("YOU FAIL");
             }
         }
 

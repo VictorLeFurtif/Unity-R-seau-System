@@ -1,4 +1,5 @@
 using System;
+using Enum;
 using Fps_Handle.Scripts.Controller;
 using Unity.Netcode;
 using UnityEngine;
@@ -9,11 +10,13 @@ namespace Manager
     {
         #region Fields
 
-        private NetworkVariable<bool> isSeeker = new NetworkVariable<bool>(false);
+        [SerializeField] private NetworkVariable<bool> isSeeker = new NetworkVariable<bool>(false);
         private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>(false);
         private NetworkVariable<float> releaseProgress = new NetworkVariable<float>(0f);
 
         private PlayerController pc;
+
+        private PlayerGameBehaviorState currentPlayerGameBehaviorState;
 
         #endregion
 
@@ -66,7 +69,7 @@ namespace Manager
         {
             GameObject prison = GameObject.FindWithTag("Prison");
             
-            Vector3 prisonPos = prison.transform.position;
+            Vector3 prisonPos = prison.transform.position + new Vector3(0,2,0);
             transform.position = prisonPos;
 
             PrisonZone prisonZone = prison.GetComponent<PrisonZone>();
@@ -82,8 +85,11 @@ namespace Manager
         [Rpc(SendTo.Everyone)]
         private void SetImprisonedRpc(bool value)
         {
-            isImprisoned.Value = value;
-        
+            if (IsServer)
+            {
+                isImprisoned.Value = value;
+            }
+    
             if (value)
                 OnCapturePrison();
             else

@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 1059499016044050400}
   - component: {fileID: 5957660791694739465}
   - component: {fileID: 7197685568776092168}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Seeker
   m_TagString: Seeker
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2285894347
+  GlobalObjectIdHash: 1343591389
   InScenePlacedSourceGlobalObjectIdHash: 3539160304
   DeferredDespawnTick: 0
   Ownership: 1
@@ -202,7 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkRigidbody
   ShowTopMostFoldoutHeaderGroup: 1
-  NetworkRigidbodyBaseExpanded: 0
+  NetworkRigidbodyBaseExpanded: 1
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
@@ -220,9 +220,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Manager.SeekerBehavior
   ShowTopMostFoldoutHeaderGroup: 1
   orientation: {fileID: 569250092834813813}
-  hitOrigin: {fileID: 0}
-  rangeAttack: 3
+  rangeAttack: 4
   attackResetTime: 1
+  seekerLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &7197685568776092168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,6 +238,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Manager.PlayerGameBehavior
   ShowTopMostFoldoutHeaderGroup: 1
+  isSeeker:
+    m_InternalValue: 1
 --- !u!1 &1850851260932578602
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +249,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 569250092834813813}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Orientation
   m_TagString: Seeker
   m_Icon: {fileID: 0}
@@ -276,7 +280,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8303160749987196152}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Camera Positon
   m_TagString: Seeker
   m_Icon: {fileID: 0}
@@ -310,7 +314,7 @@ GameObject:
   - component: {fileID: 3342298973072404713}
   - component: {fileID: 4491787293013409821}
   - component: {fileID: 2966106813754405594}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player Object
   m_TagString: Seeker
   m_Icon: {fileID: 0}

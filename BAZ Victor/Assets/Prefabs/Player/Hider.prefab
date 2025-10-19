@@ -160,6 +160,7 @@ GameObject:
   - component: {fileID: 765135615820488659}
   - component: {fileID: 2136902890583992307}
   - component: {fileID: 599901396244366778}
+  - component: {fileID: -1417673260185482184}
   m_Layer: 0
   m_Name: Hider
   m_TagString: Hider
@@ -224,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 279011681
+  GlobalObjectIdHash: 153067841
   InScenePlacedSourceGlobalObjectIdHash: 3539160304
   DeferredDespawnTick: 0
   Ownership: 1
@@ -348,6 +349,21 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
+--- !u!114 &-1417673260185482184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7111360452278198599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0b4a21641dc8bb4487e39194cc3d826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Manager.PlayerGameBehavior
+  ShowTopMostFoldoutHeaderGroup: 1
+  isSeeker:
+    m_InternalValue: 0
 --- !u!1 &8601145073646546130
 GameObject:
   m_ObjectHideFlags: 0
