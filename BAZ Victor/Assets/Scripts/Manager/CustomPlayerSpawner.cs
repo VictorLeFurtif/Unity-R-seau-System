@@ -12,7 +12,7 @@ namespace Manager
         private void OnEnable()
         {
             if (NetworkManager.Singleton == null) return;
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected; // même aps call je crois
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected; 
         }
 
         private void OnDisable()

@@ -220,7 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Manager.SeekerBehavior
   ShowTopMostFoldoutHeaderGroup: 1
   orientation: {fileID: 569250092834813813}
-  rangeAttack: 4
+  rangeAttack: 1
   attackResetTime: 1
   seekerLayer:
     serializedVersion: 2

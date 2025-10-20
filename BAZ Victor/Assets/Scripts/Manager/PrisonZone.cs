@@ -8,9 +8,9 @@ namespace Manager
     {
         #region Fields
 
-        private float defaultProgression = 100f;
+        private float defaultProgression = 10f;
 
-        private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(100f);
+        private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(10f);
         private NetworkVariable<int> prisonerCount = new NetworkVariable<int>(0);
         private NetworkVariable<bool> releasing = new NetworkVariable<bool>(false);
         
@@ -23,7 +23,7 @@ namespace Manager
 
         private void Update()
         {
-            if (!IsServer) return; 
+            if (!IsServer) return;  //on met a jour la networkVariable que sur le host/serv
             
             TryReleasingPlayer();
         }
@@ -34,29 +34,34 @@ namespace Manager
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!IsServer) return; 
-            
-            if (!other.CompareTag("Hider")) return;
-            
-            PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
-            if (hider == null || hider.IsImprisoned()) return;
-            
-            
-            if (!hiderReleasing.Contains(hider))
+            if (!IsServer || !other.CompareTag("Hider"))
             {
-                hiderReleasing.Add(hider);
+                Debug.Log("You re not a hider");
+                return;
+            }
+    
+            PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
+
+            if (hider == null || hider.IsImprisoned() || hiderReleasing.Contains(hider))
+            {
+                Debug.Log("You re certainly already in prison");
+                return;
             }
             
-            StartReleasePlayer();
+            hiderReleasing.Add(hider);
+        
+            if (hiderReleasing.Count == 1 && prisonerQueue.Count > 0)
+            {
+                StartReleasePlayer();
+            }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (!IsServer) return; 
-            
-            if (!other.CompareTag("Hider")) return;
+            if (!IsServer || !other.CompareTag("Hider")) return;
             
             PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
+            
             if (hider == null || hider.IsImprisoned()) return;
             
             hiderReleasing.Remove(hider);
@@ -81,7 +86,10 @@ namespace Manager
         
         private void StartReleasePlayer()
         {
+            if (prisonerQueue.Count == 0) return; 
+    
             releasing.Value = true;
+            releaseProgression.Value = defaultProgression;
         }
         
         private void StopTryReleasePlayer()
@@ -104,8 +112,6 @@ namespace Manager
         
         private void ReleasePlayer()
         {
-            if (prisonerQueue.Count == 0) return;
-            
             PlayerGameBehavior freedPrisoner = prisonerQueue.Dequeue();
             freedPrisoner.SetImprisoned(false); 
             

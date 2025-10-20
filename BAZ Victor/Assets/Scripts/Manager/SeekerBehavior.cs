@@ -67,15 +67,11 @@ namespace Manager
             {
                 PlayerGameBehavior hitPlayer = hit.transform.GetComponent<PlayerGameBehavior>();
                 
-                //hit a hider not in prison
                 if (hitPlayer != null && !hitPlayer.IsSeeker() && !hitPlayer.IsImprisoned()) 
                 {
-                    Debug.Log("YOU HIT A PLAYER WELL DONE");
                     hitPlayer.SetImprisoned(true);
                     return;
                 }
-                
-                Debug.Log("YOU FAIL");
             }
         }
 

@@ -412,9 +412,9 @@ namespace Fps_Handle.Scripts.Controller
 
         public void ResetVelocity()
         {
-            
             rb.linearVelocity = new Vector3(0,0,0);
         }
+        
         
         #endregion
 

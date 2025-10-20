@@ -319,24 +319,20 @@ PrefabInstance:
       value: Prison
       objectReference: {fileID: 0}
     - target: {fileID: 4863733619152372558, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
-      propertyPath: m_TagString
-      value: Prison
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5151364670270673844, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3662327144
       objectReference: {fileID: 0}
-    - target: {fileID: 5151364670270673844, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 1213241441
-      objectReference: {fileID: 0}
     - target: {fileID: 5668857051166961869, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.4483204
+      value: -27.48
       objectReference: {fileID: 0}
     - target: {fileID: 5668857051166961869, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.12
+      value: -1.04
       objectReference: {fileID: 0}
     - target: {fileID: 5668857051166961869, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_LocalPosition.z

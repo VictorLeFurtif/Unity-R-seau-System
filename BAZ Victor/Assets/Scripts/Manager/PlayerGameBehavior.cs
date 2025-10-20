@@ -12,7 +12,6 @@ namespace Manager
 
         [SerializeField] private NetworkVariable<bool> isSeeker = new NetworkVariable<bool>(false);
         private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>(false);
-        private NetworkVariable<float> releaseProgress = new NetworkVariable<float>(0f);
 
         private PlayerController pc;
 
@@ -31,12 +30,11 @@ namespace Manager
         
         #region State Methods
         
-        public void SetImprisoned(bool value) //true if tag and false if released by friend
+        public void SetImprisoned(bool value)
         {
             SetImprisonedRpc(value);
         }
         
-        // We just tp to prison and block movement
         private void OnCapturePrison()
         {
             TeleportPrison();
@@ -58,20 +56,16 @@ namespace Manager
         #endregion
 
         #region Teleport In Prison
-        
-        /*
-         If I understand the logic is that because we dont use a RPC but a networkVariable + Obeserver pattern with
-         the on valueChanged then it will be updated in all scene thanks to NV and then the call will be made
-         then the player who has been it will be tp in every scene.
-        */
 
         private void TeleportPrison()
         {
             GameObject prison = GameObject.FindWithTag("Prison");
-            
-            Vector3 prisonPos = prison.transform.position + new Vector3(0,2,0);
-            transform.position = prisonPos;
+            Vector3 prisonPos = prison.transform.position + new Vector3(0,2,0); //offsett ?
 
+            pc.GetPlayerRigidbody().isKinematic = true;
+            transform.position = prisonPos;
+            pc.GetPlayerRigidbody().isKinematic = false;
+            
             PrisonZone prisonZone = prison.GetComponent<PrisonZone>();
             prisonZone.AddPrisoner(this);
             
@@ -85,11 +79,12 @@ namespace Manager
         [Rpc(SendTo.Everyone)]
         private void SetImprisonedRpc(bool value)
         {
-            if (IsServer)
+            if (IsServer) //on met a jour que le serv/host vu que c'est une networkVariable
             {
                 isImprisoned.Value = value;
             }
     
+            //on met a jour que la pos pour tout le monde en suite
             if (value)
                 OnCapturePrison();
             else
