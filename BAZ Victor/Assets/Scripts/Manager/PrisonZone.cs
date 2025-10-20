@@ -10,7 +10,7 @@ namespace Manager
 
         private float defaultProgression = 10f;
 
-        private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(10f);
+        [SerializeField] private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(10f);
         private NetworkVariable<int> prisonerCount = new NetworkVariable<int>(0);
         private NetworkVariable<bool> releasing = new NetworkVariable<bool>(false);
         
@@ -39,10 +39,14 @@ namespace Manager
                 Debug.Log("You re not a hider");
                 return;
             }
+            else
+            {
+                Debug.Log("You require a hider");
+            }
     
             PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
 
-            if (hider == null || hider.IsImprisoned() || hiderReleasing.Contains(hider))
+            if (hider == null || hider.IsImprisoned() || hiderReleasing.Contains(hider)) //TODO : correct error
             {
                 Debug.Log("You re certainly already in prison");
                 return;
@@ -52,6 +56,7 @@ namespace Manager
         
             if (hiderReleasing.Count == 1 && prisonerQueue.Count > 0)
             {
+                Debug.Log("You Start prison");
                 StartReleasePlayer();
             }
         }

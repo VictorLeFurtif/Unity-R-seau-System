@@ -251,7 +251,9 @@ namespace Fps_Handle.Scripts.Controller
             
             rb.AddForce(wallForward * data.WallRunForce, ForceMode.Force);
 
-            if (upwardRunning)
+            //USELESS for this game because no need up and down
+            
+            /*if (upwardRunning)
             {
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,data.WallClimbSpeed, rb.linearVelocity.z);
             }
@@ -259,7 +261,9 @@ namespace Fps_Handle.Scripts.Controller
             if (downwardRunning)
             {
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,-data.WallClimbSpeed, rb.linearVelocity.z);
-            }
+            }*/
+            
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x,data.WallClimbSpeed, rb.linearVelocity.z);
             
             if (!(wallLeft && horizontalInput > 0 ) && !(wallRight && horizontalInput < 0 ))
             {

@@ -25,6 +25,6 @@ MonoBehaviour:
   <WallJumpSideForce>k__BackingField: 30
   <WallCheckDistance>k__BackingField: 0.7
   <MinJumpHeight>k__BackingField: 2
-  <ExitWallTime>k__BackingField: 0.2
+  <ExitWallTime>k__BackingField: 1
   <UseGravity>k__BackingField: 1
   <GravityCounterForce>k__BackingField: 1
