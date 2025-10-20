@@ -519,6 +519,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 182571269281218672, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: f3ec8fd0de58bf6439182ca52874813b, type: 2}
     - target: {fileID: 4354693911248811447, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3948497170
@@ -566,6 +570,10 @@ PrefabInstance:
     - target: {fileID: 8323745074816252234, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
       propertyPath: m_Name
       value: CAMERA
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514903678014746437, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1406,9 +1414,13 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7303831346864801446, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 8400000, guid: f3ec8fd0de58bf6439182ca52874813b, type: 2}
+    - target: {fileID: 7303831346864801446, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2100000, guid: 582ae00a4bab72f4e9964bd1a632b2fb, type: 2}
+      objectReference: {fileID: 2100000, guid: 69a574ac6babae347a8244d15d67214a, type: 2}
     - target: {fileID: 7585083105371290942, guid: 5d10564ee0dab6f4cbfb849337defa85, type: 3}
       propertyPath: m_Name
       value: CANVAS ALL
