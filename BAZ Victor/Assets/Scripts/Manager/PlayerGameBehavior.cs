@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Enum;
 using Fps_Handle.Scripts.Controller;
 using Unity.Netcode;
@@ -11,11 +12,9 @@ namespace Manager
         #region Fields
 
         [SerializeField] private NetworkVariable<bool> isSeeker = new NetworkVariable<bool>(false);
-        private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>(false);
+        [SerializeField] private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>(false);
 
         private PlayerController pc;
-
-        private PlayerGameBehaviorState currentPlayerGameBehaviorState;
 
         #endregion
 
@@ -37,8 +36,9 @@ namespace Manager
         
         private void OnCapturePrison()
         {
-            TeleportPrison();
-
+            //TeleportPrison();
+            StartCoroutine(TeleportPrisonIe());
+            
             if (IsOwner)
             {
                 pc.SetterMove(false);
@@ -57,19 +57,24 @@ namespace Manager
 
         #region Teleport In Prison
 
-        private void TeleportPrison()
+        private IEnumerator TeleportPrisonIe()
         {
             GameObject prison = GameObject.FindWithTag("Prison");
             Vector3 prisonPos = prison.transform.position + new Vector3(0,2,0); //offsett ?
 
-            pc.GetPlayerRigidbody().isKinematic = true;
+            Rigidbody playerRb = pc.GetPlayerRigidbody();
+            
+            playerRb.isKinematic = true;
+            yield return new WaitForFixedUpdate();
             transform.position = prisonPos;
-            pc.GetPlayerRigidbody().isKinematic = false;
+            yield return new WaitForFixedUpdate();
+            playerRb.isKinematic = false;
+            
+            pc.ResetVelocity();
+            transform.position = prisonPos; //to make sure
             
             PrisonZone prisonZone = prison.GetComponent<PrisonZone>();
             prisonZone.AddPrisoner(this);
-            
-            pc.ResetVelocity();
         }
         
         #endregion

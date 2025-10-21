@@ -81,6 +81,8 @@ namespace Fps_Handle.Scripts.Controller
             {
                 cameraController = CameraController.Instance;
                 
+                ToggleCursor(true);
+                
                 if (cameraController == null)
                 {
                     Debug.LogError("[PlayerController] CameraController.Instance is null!");
@@ -117,6 +119,8 @@ namespace Fps_Handle.Scripts.Controller
             
             if (IsOwner && inputActions != null)
             {
+                ToggleCursor(false);
+                
                 inputActions.Disable();
                 inputActions.Dispose(); 
                 inputActions = null;
@@ -163,6 +167,12 @@ namespace Fps_Handle.Scripts.Controller
             rb.freezeRotation = true;
 
             startYScale = transform.localScale.y;
+        }
+        
+        private void ToggleCursor(bool playerSpawning)
+        {
+            Cursor.lockState = playerSpawning ? CursorLockMode.Locked : CursorLockMode.None;
+            Cursor.visible = !playerSpawning;
         }
 
         #endregion
@@ -412,7 +422,8 @@ namespace Fps_Handle.Scripts.Controller
 
         public void ResetVelocity()
         {
-            rb.linearVelocity = new Vector3(0,0,0);
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
         
         

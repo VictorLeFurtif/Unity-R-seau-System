@@ -50,7 +50,6 @@ namespace Fps_Handle.Scripts.Controller
 
         private void Start()
         {
-            InitCursor();
             ToggleSpeedCameraEffect(false);
         }
         
@@ -67,11 +66,7 @@ namespace Fps_Handle.Scripts.Controller
 
         #region Initialization Methods
 
-        private void InitCursor()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+        
         
         
         public void FollowTarget(Transform target, Transform targetOrientation)

@@ -10,12 +10,12 @@ namespace Manager
 
         private float defaultProgression = 10f;
 
-        [SerializeField] private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(10f);
+        private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(10f);
         private NetworkVariable<int> prisonerCount = new NetworkVariable<int>(0);
-        private NetworkVariable<bool> releasing = new NetworkVariable<bool>(false);
+        [SerializeField] private NetworkVariable<bool> releasing = new NetworkVariable<bool>(false);
         
         private Queue<PlayerGameBehavior> prisonerQueue = new Queue<PlayerGameBehavior>();
-        private List<PlayerGameBehavior> hiderReleasing = new List<PlayerGameBehavior>();
+        [SerializeField] private List<PlayerGameBehavior> hiderReleasing = new List<PlayerGameBehavior>();
 
         #endregion
 
@@ -39,16 +39,12 @@ namespace Manager
                 Debug.Log("You re not a hider");
                 return;
             }
-            else
-            {
-                Debug.Log("You require a hider");
-            }
+            
     
-            PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
+            PlayerGameBehavior hider = other.GetComponentInParent<PlayerGameBehavior>();
 
-            if (hider == null || hider.IsImprisoned() || hiderReleasing.Contains(hider)) //TODO : correct error
+            if (hider == null || hider.IsImprisoned() || hiderReleasing.Contains(hider)) 
             {
-                Debug.Log("You re certainly already in prison");
                 return;
             }
             
@@ -65,7 +61,7 @@ namespace Manager
         {
             if (!IsServer || !other.CompareTag("Hider")) return;
             
-            PlayerGameBehavior hider = other.GetComponent<PlayerGameBehavior>();
+            PlayerGameBehavior hider = other.GetComponentInParent<PlayerGameBehavior>();
             
             if (hider == null || hider.IsImprisoned()) return;
             
@@ -108,6 +104,7 @@ namespace Manager
             if (!releasing.Value || prisonerQueue.Count == 0) return;
 
             releaseProgression.Value -= Time.deltaTime;
+            //ici
             
             if (releaseProgression.Value <= 0)
             {
@@ -127,6 +124,7 @@ namespace Manager
         private void ResetZoneAfterRelease()
         {
             releaseProgression.Value = defaultProgression;
+            
         }
 
         #endregion
@@ -134,7 +132,8 @@ namespace Manager
         #region Getter Setter
 
         public int GetPrisonerCount() => prisonerCount.Value; 
-        public float GetReleaseProgress() => releaseProgression.Value; 
+        public float GetReleaseProgress() => releaseProgression.Value;
+        public bool IsReleasing() => releasing.Value;
 
         #endregion
     }
