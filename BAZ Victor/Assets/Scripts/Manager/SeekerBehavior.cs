@@ -1,4 +1,5 @@
 using System;
+using EventBus;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,6 +18,7 @@ namespace Manager
         [SerializeField] private float attackResetTime = 1f;
         
         private PlayerInputActions inputActions;
+        private bool attackEnabled = false;
 
         [SerializeField] private LayerMask seekerLayer;
         
@@ -34,6 +36,11 @@ namespace Manager
             base.OnNetworkSpawn();
             
             if (!IsOwner) return;
+            
+            EventManager.OnLobbyEntered += OnLobbyEntered;
+            EventManager.OnGameStarted += OnGameStarted;
+            EventManager.OnGameEnded += OnGameEnded;
+            
             inputActions.Enable();
             inputActions.Player.Attack.performed +=  Attack;
         }
@@ -43,12 +50,35 @@ namespace Manager
             base.OnNetworkDespawn();
             
             if (!IsOwner || inputActions == null) return;
+            
+            EventManager.OnLobbyEntered -= OnLobbyEntered;
+            EventManager.OnGameStarted -= OnGameStarted;
+            EventManager.OnGameEnded -= OnGameEnded;
 
             inputActions.Player.Attack.performed -=  Attack;
             inputActions.Disable();
             inputActions.Dispose();
         }
 
+        #endregion
+        
+        #region Game State Handlers
+        
+        private void OnLobbyEntered()
+        {
+            attackEnabled = false;
+        }
+        
+        private void OnGameStarted()
+        {
+            attackEnabled = true;
+        }
+        
+        private void OnGameEnded()
+        {
+            attackEnabled = false;
+        }
+        
         #endregion
         
         #region Attack
@@ -58,7 +88,7 @@ namespace Manager
         private void Attack(InputAction.CallbackContext ctx)
         {
 
-            if (isAttacking) return;
+            if (isAttacking || !attackEnabled) return;
 
             isAttacking = true;
             Invoke(nameof(ResetAttack),attackResetTime);

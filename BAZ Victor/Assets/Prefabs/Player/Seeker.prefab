@@ -83,7 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2285894347
+  GlobalObjectIdHash: 1343591389
   InScenePlacedSourceGlobalObjectIdHash: 3539160304
   DeferredDespawnTick: 0
   Ownership: 1
@@ -221,7 +221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Manager.SeekerBehavior
   ShowTopMostFoldoutHeaderGroup: 1
   orientation: {fileID: 569250092834813813}
-  rangeAttack: 1
+  rangeAttack: 2
   attackResetTime: 1
   seekerLayer:
     serializedVersion: 2
