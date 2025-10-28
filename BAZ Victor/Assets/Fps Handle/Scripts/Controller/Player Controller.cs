@@ -29,6 +29,8 @@ namespace Fps_Handle.Scripts.Controller
 
         [SerializeField] private Rigidbody rb; //cant change
 
+        [SerializeField] private Collider colliderPlayer;
+
         private MovementState currentMovementState = MovementState.Walking;
 
         public enum MovementState
@@ -162,6 +164,11 @@ namespace Fps_Handle.Scripts.Controller
             if (rb == null)
             {
                 rb = GetComponent<Rigidbody>();
+            }
+
+            if (colliderPlayer == null)
+            {
+                colliderPlayer = GetComponentInChildren<Collider>();
             }
 
             rb.freezeRotation = true;
@@ -444,7 +451,9 @@ namespace Fps_Handle.Scripts.Controller
         public MovementState GetMovementState() => currentMovementState;
         public Transform GetOrientation() => orientation;
         public Rigidbody GetPlayerRigidbody() => rb;
-        
+
+        public void SetterCollider(bool _result) => colliderPlayer.enabled = _result;
+
         #endregion
     }
 }

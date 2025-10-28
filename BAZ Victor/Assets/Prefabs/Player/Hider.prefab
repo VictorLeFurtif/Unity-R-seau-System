@@ -432,6 +432,7 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: de612a9f2e1f5c1428473625a4befb16, type: 2}
   orientation: {fileID: 3030891136399327712}
   rb: {fileID: 55264206248024134}
+  colliderPlayer: {fileID: 2978395233942410506}
   centerPlayer: {fileID: 7740311875742171558}
 --- !u!114 &4132525524231295084
 MonoBehaviour:
@@ -541,8 +542,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Manager.PlayerGameBehavior
   ShowTopMostFoldoutHeaderGroup: 1
   isSeeker:
-    m_InternalValue: 0
-  isImprisoned:
     m_InternalValue: 0
 --- !u!1 &8601145073646546130
 GameObject:

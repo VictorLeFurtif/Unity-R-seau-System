@@ -12,7 +12,7 @@ namespace Manager
         #region Fields
 
         [SerializeField] private NetworkVariable<bool> isSeeker = new NetworkVariable<bool>(false);
-        [SerializeField] private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>(false);
+        private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>(false);
         
         private GameObject prisonGameObject;
         
@@ -112,21 +112,34 @@ namespace Manager
 
         private IEnumerator TeleportPrisonIe()
         {
-            Vector3 prisonPos = prisonGameObject.transform.position + new Vector3(0,2,0); //offsett ?
-
+            pc.SetterCollider(false);
             Rigidbody playerRb = pc.GetPlayerRigidbody();
+            pc.ResetVelocity();
+            yield return new WaitForFixedUpdate();
             
             playerRb.isKinematic = true;
+            
             yield return new WaitForFixedUpdate();
+
+            Vector3 prisonPos = prisonGameObject.transform.position + Vector3.up * 2f;
+
             transform.position = prisonPos;
             yield return new WaitForFixedUpdate();
+
             playerRb.isKinematic = false;
-            
+            yield return new WaitForFixedUpdate();
+
             pc.ResetVelocity();
-            transform.position = prisonPos; //to make sure
-            
-            PrisonZone prisonZone = prisonGameObject.GetComponent<PrisonZone>();
-            prisonZone.AddPrisoner(this);
+
+            if (this != null && prisonGameObject != null)
+            {
+                PrisonZone prisonZone = prisonGameObject.GetComponent<PrisonZone>();
+                if (prisonZone != null)
+                    prisonZone.AddPrisoner(this);
+            }
+
+            yield return new WaitForFixedUpdate(); 
+            pc.SetterCollider(true);
         }
         
         #endregion

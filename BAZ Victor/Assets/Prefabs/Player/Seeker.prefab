@@ -112,6 +112,7 @@ MonoBehaviour:
   data: {fileID: 11400000, guid: de612a9f2e1f5c1428473625a4befb16, type: 2}
   orientation: {fileID: 569250092834813813}
   rb: {fileID: 5719390487687659811}
+  colliderPlayer: {fileID: 2966106813754405594}
   centerPlayer: {fileID: 2731011424249865253}
 --- !u!114 &5272848313400672119
 MonoBehaviour:
@@ -241,8 +242,6 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   isSeeker:
     m_InternalValue: 1
-  isImprisoned:
-    m_InternalValue: 0
 --- !u!1 &1850851260932578602
 GameObject:
   m_ObjectHideFlags: 0
