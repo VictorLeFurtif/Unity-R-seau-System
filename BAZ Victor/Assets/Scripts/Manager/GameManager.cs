@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using Enum;
 using EventBus;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Manager
 {
@@ -44,17 +46,18 @@ namespace Manager
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            
+
             currentGameState.OnValueChanged += OnGameStateChanged;
-            
+
             if (IsServer)
             {
                 NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-                
-                EventManager.GameStateChanged(currentGameState.Value);
+
+                ChangeGameState(GameState.Lobby);
             }
         }
+
 
         public override void OnNetworkDespawn()
         {
@@ -66,6 +69,14 @@ namespace Manager
             {
                 NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+            }
+        }
+
+        private void Update()
+        {
+            if (Keyboard.current.rKey.wasPressedThisFrame)
+            {
+                Debug.LogWarning("actual game state : " + currentGameState.Value + "\n isServer : " + IsServer);
             }
         }
 
@@ -93,11 +104,16 @@ namespace Manager
 
         private void OnClientConnected(ulong clientId)
         {
-            
             if (!connectedPlayerIds.Contains(clientId))
-            {
                 connectedPlayerIds.Add(clientId);
-            }
+
+            NotifyClientOfGameStateClientRpc(currentGameState.Value, new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new[] { clientId }
+                }
+            });
         }
 
         private void OnClientDisconnected(ulong clientId)
@@ -139,6 +155,19 @@ namespace Manager
         public GameState GetCurrentState() => currentGameState.Value;
         public int GetPlayerCount() => connectedPlayerIds.Count;
         public bool CanStartGame() => connectedPlayerIds.Count >= minPlayersToStart;
+
+        #endregion
+
+        #region Rpc
+
+        
+
+        [ClientRpc]
+        private void NotifyClientOfGameStateClientRpc(GameState state, ClientRpcParams rpcParams = default)
+        {
+            EventManager.GameStateChanged(state);
+        }
+
 
         #endregion
     }

@@ -1,4 +1,5 @@
 using System;
+using Enum;
 using EventBus;
 using Manager;
 using Unity.Netcode;
@@ -20,7 +21,6 @@ namespace UI
         [Header("Buttons")]
         [SerializeField] private Button hostButton;
         [SerializeField] private Button clientButton;
-        [SerializeField] private Button startGameButton;
 
         #endregion
 
@@ -29,6 +29,11 @@ namespace UI
         private void Awake()
         {
             InitButtons();
+        }
+
+        private void Update()
+        {
+            LaunchGame();
         }
 
         #endregion
@@ -41,7 +46,6 @@ namespace UI
             
             if (clientButton != null) clientButton.onClick.AddListener(OnClientClicked);
             
-            if (startGameButton != null) startGameButton.onClick.AddListener(OnStartGameClicked);
         }
 
         #endregion
@@ -114,10 +118,9 @@ namespace UI
             
             if (launchGamePanel != null)
             {
-                launchGamePanel.SetActive(IsLocalPlayerHost()); // check for just Host to launch
+                launchGamePanel.SetActive(IsLocalPlayerHost());
             }
             
-            //UpdateStartButton();
         }
         
         private void OnGameState()
@@ -147,6 +150,14 @@ namespace UI
                 launchGamePanel.SetActive(false);
             }
         }
+
+        private void LaunchGame()
+        {
+            if (Keyboard.current.fKey.wasPressedThisFrame && GameManager.Instance != null)
+            {
+                GameManager.Instance.LaunchGame();
+            }
+        }
         
         #endregion
 
@@ -155,14 +166,6 @@ namespace UI
         private bool IsLocalPlayerHost()
         {
             return NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
-        }
-
-        private void UpdateStartButton()
-        {
-            if (startGameButton != null && GameManager.Instance != null)
-            {
-                startGameButton.interactable = GameManager.Instance.CanStartGame();
-            }
         }
 
         #endregion
