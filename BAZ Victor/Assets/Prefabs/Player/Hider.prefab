@@ -543,6 +543,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   isSeeker:
     m_InternalValue: 0
+  ntTransform: {fileID: 2136902890583992307}
 --- !u!1 &8601145073646546130
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using EventBus;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -16,6 +18,7 @@ namespace Manager
         
         private Queue<PlayerGameBehavior> prisonerQueue = new Queue<PlayerGameBehavior>();
         [SerializeField] private List<PlayerGameBehavior> hiderReleasing = new List<PlayerGameBehavior>();
+
 
         #endregion
 
@@ -40,7 +43,6 @@ namespace Manager
                 return;
             }
             
-    
             PlayerGameBehavior hider = other.GetComponentInParent<PlayerGameBehavior>();
 
             if (hider == null || hider.IsImprisoned() || hiderReleasing.Contains(hider)) 
@@ -65,6 +67,7 @@ namespace Manager
             
             if (hider == null || hider.IsImprisoned()) return;
             
+            Debug.Log("Exit");
             hiderReleasing.Remove(hider);
 
             if (hiderReleasing.Count <= 0)
@@ -82,8 +85,30 @@ namespace Manager
             if (!IsServer) return; 
             
             prisonerQueue.Enqueue(prisoner);
-            prisonerCount.Value = prisonerQueue.Count; 
+            prisonerCount.Value = prisonerQueue.Count;
+
+            if (hiderReleasing.Contains(prisoner)) //was releasing someone
+            {
+                hiderReleasing.Remove(prisoner);
+            }
+            
+            EventManager.PlayerIsImprisoned();
         }
+        
+        private void ResetZoneAfterRelease()
+        {
+            releaseProgression.Value = defaultProgression;
+        }
+
+        private void ResetZone()
+        {
+            ResetZoneAfterRelease();
+            releasing.Value = false;
+        }
+
+        #endregion
+
+        #region Release Methods
         
         private void StartReleasePlayer()
         {
@@ -92,19 +117,12 @@ namespace Manager
             releasing.Value = true;
             releaseProgression.Value = defaultProgression;
         }
-        
-        private void StopTryReleasePlayer()
-        {
-            releaseProgression.Value = defaultProgression;
-            releasing.Value = false;
-        }
-        
+
         private void TryReleasingPlayer()
         {
             if (!releasing.Value || prisonerQueue.Count == 0) return;
 
             releaseProgression.Value -= Time.deltaTime;
-            //ici
             
             if (releaseProgression.Value <= 0)
             {
@@ -121,10 +139,10 @@ namespace Manager
             ResetZoneAfterRelease();
         }
         
-        private void ResetZoneAfterRelease()
+        private void StopTryReleasePlayer()
         {
             releaseProgression.Value = defaultProgression;
-            
+            releasing.Value = false;
         }
 
         #endregion
@@ -134,6 +152,42 @@ namespace Manager
         public int GetPrisonerCount() => prisonerCount.Value; 
         public float GetReleaseProgress() => releaseProgression.Value;
         public bool IsReleasing() => releasing.Value;
+
+        #endregion
+
+        #region Security and Check
+
+        private void CheckPrisonState()
+        {
+            if (releasing.Value && hiderReleasing.Count <= 0 )
+            {
+                ResetZone();
+            }
+        }
+
+        #endregion
+
+        #region Observer
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            
+            if (IsServer)
+            {
+                EventManager.OnPlayerImprisoned += CheckPrisonState;
+            }
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+            
+            if (IsServer)
+            {
+                EventManager.OnPlayerImprisoned -= CheckPrisonState;
+            }
+            
+        }
 
         #endregion
     }

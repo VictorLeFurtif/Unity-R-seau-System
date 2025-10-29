@@ -16,11 +16,16 @@ namespace EventBus
         public static event Action OnGameEnded;
         public static event Action OnMenu;
 
+        public static event Action OnPlayerImprisoned;
+
         #endregion
         
+        #region Methods Helper
 
-
-        #region Methods Helper 
+        public static void PlayerIsImprisoned()
+        {
+            OnPlayerImprisoned?.Invoke();
+        }
 
         public static void GameStateChanged(GameState newState)
         {

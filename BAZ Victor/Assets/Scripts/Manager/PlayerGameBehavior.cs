@@ -3,6 +3,7 @@ using System.Collections;
 using Enum;
 using Fps_Handle.Scripts.Controller;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace Manager
@@ -20,6 +21,8 @@ namespace Manager
         private Vector3 prisonMax;
 
         private PlayerController pc;
+
+        [SerializeField] private NetworkTransform ntTransform;
 
         #endregion
 
@@ -76,11 +79,6 @@ namespace Manager
         private void OnCapturePrison()
         {
             StartCoroutine(TeleportPrisonIe());
-
-            if (IsOwner)
-            {
-                //pc.SetterMove(false);
-            }
         }
 
         private void OnReleasePrison()
@@ -112,24 +110,23 @@ namespace Manager
 
         private IEnumerator TeleportPrisonIe()
         {
-            pc.SetterCollider(false);
-            Rigidbody playerRb = pc.GetPlayerRigidbody();
+            yield return new WaitForFixedUpdate();
+         
             pc.ResetVelocity();
-            yield return new WaitForFixedUpdate();
-            
-            playerRb.isKinematic = true;
             
             yield return new WaitForFixedUpdate();
-
+            
             Vector3 prisonPos = prisonGameObject.transform.position + Vector3.up * 2f;
-
             transform.position = prisonPos;
-            yield return new WaitForFixedUpdate();
-
-            playerRb.isKinematic = false;
-            yield return new WaitForFixedUpdate();
-
             pc.ResetVelocity();
+
+            if (IsOwner)
+            {
+                //ADD LATER SECURITY
+                ntTransform.Teleport(prisonPos,Quaternion.identity, Vector3.one);
+            }
+            
+            
 
             if (this != null && prisonGameObject != null)
             {
@@ -137,10 +134,8 @@ namespace Manager
                 if (prisonZone != null)
                     prisonZone.AddPrisoner(this);
             }
-
-            yield return new WaitForFixedUpdate(); 
-            pc.SetterCollider(true);
         }
+        
         
         #endregion
 
@@ -155,10 +150,16 @@ namespace Manager
             }
     
             //on met a jour que la pos pour tout le monde en suite
+            
             if (value)
+            {   
                 OnCapturePrison();
+            }
             else
+            {
                 OnReleasePrison();
+            }
+                
         }
 
         #endregion
