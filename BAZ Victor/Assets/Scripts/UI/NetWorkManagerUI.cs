@@ -96,7 +96,7 @@ namespace UI
         
         private void OnMenuState()
         {
-            
+            Debug.Log("HEREEEE");
             if (connectionPanel != null)
             {
                 connectionPanel.SetActive(true);

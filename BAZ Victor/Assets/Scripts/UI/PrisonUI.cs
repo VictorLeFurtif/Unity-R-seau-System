@@ -1,4 +1,5 @@
 using System;
+using EventBus;
 using Manager;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace UI
         [SerializeField] private Slider releaseProgressBar;
         [SerializeField] private TMP_Text prisonerCountText;
         [SerializeField] private GameObject releasePanel;
+        [SerializeField] private GameObject countPanel;
 
         #endregion
 
@@ -52,10 +54,15 @@ namespace UI
         
         private void UpdateUI()
         {
+            if (!GameManager.Instance.InGame())
+            {
+                return;
+            }
+            
             if (prisonerCountText != null)
             {
                 int count = prisonZone.GetPrisonerCount();
-                prisonerCountText.text = $"Prisonniers: {count}";
+                prisonerCountText.text = $"Prisonniers: {count}/{GameManager.Instance.GetPlayerCount() - 1}";
             }
             
             bool isReleasing = prisonZone.IsReleasing();
@@ -70,6 +77,54 @@ namespace UI
                 float progress = prisonZone.GetReleaseProgress();
                 releaseProgressBar.value = progress;
             }
+        }
+        
+        #endregion
+        
+        #region Event Listeners
+
+        private void OnEnable()
+        {
+            EventManager.OnMenu += OnMenuState;
+            EventManager.OnLobbyEntered += OnLobbyState;
+            EventManager.OnGameStarted += OnGameState;
+            EventManager.OnGameEnded += OnGameEndState;
+        }
+
+        private void OnDisable()
+        {
+            EventManager.OnMenu -= OnMenuState;
+            EventManager.OnLobbyEntered -= OnLobbyState;
+            EventManager.OnGameStarted -= OnGameState;
+            EventManager.OnGameEnded -= OnGameEndState;
+        }
+
+        #endregion
+        
+        #region State Handlers
+        
+        private void OnMenuState()
+        {
+            releasePanel.SetActive(false);
+            countPanel.SetActive(false);
+        }
+        
+        private void OnLobbyState()
+        {
+            releasePanel.SetActive(false);
+            countPanel.SetActive(false);
+        }
+        
+        private void OnGameState()
+        {
+            releasePanel.SetActive(true);
+            countPanel.SetActive(true);
+        }
+        
+        private void OnGameEndState()
+        {
+            releasePanel.SetActive(false);
+            countPanel.SetActive(true);
         }
         
         #endregion

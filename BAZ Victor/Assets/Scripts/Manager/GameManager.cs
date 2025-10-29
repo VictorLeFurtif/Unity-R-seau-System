@@ -29,6 +29,8 @@ namespace Manager
 
         private List<ulong> connectedPlayerIds = new List<ulong>();
 
+        private NetworkVariable<int> numberConnectedPlayer = new NetworkVariable<int>();
+
         #endregion
         
         #region Unity Methods
@@ -41,6 +43,8 @@ namespace Manager
                 return;
             }
             Instance = this;
+            
+            ChangeGameState(GameState.Menu);
         }
         
         public override void OnNetworkSpawn()
@@ -88,7 +92,7 @@ namespace Manager
         {
             if (!IsServer) return; 
             
-            if (currentGameState.Value == newGameState) return; 
+            //if (currentGameState.Value == newGameState) return; 
             
             currentGameState.Value = newGameState;
         }
@@ -105,7 +109,11 @@ namespace Manager
         private void OnClientConnected(ulong clientId)
         {
             if (!connectedPlayerIds.Contains(clientId))
+            {
                 connectedPlayerIds.Add(clientId);
+                numberConnectedPlayer.Value++;
+            }
+                
 
             NotifyClientOfGameStateClientRpc(currentGameState.Value, new ClientRpcParams
             {
@@ -119,6 +127,7 @@ namespace Manager
         private void OnClientDisconnected(ulong clientId)
         {
             connectedPlayerIds.Remove(clientId);
+            numberConnectedPlayer.Value--;
             
             if (currentGameState.Value == GameState.InGame && connectedPlayerIds.Count < minPlayersToStart)
             {
@@ -153,8 +162,10 @@ namespace Manager
         #region Getters
 
         public GameState GetCurrentState() => currentGameState.Value;
-        public int GetPlayerCount() => connectedPlayerIds.Count;
+        public int GetPlayerCount() => numberConnectedPlayer.Value;
         public bool CanStartGame() => connectedPlayerIds.Count >= minPlayersToStart;
+
+        public bool InGame() => currentGameState.Value == GameState.InGame; 
 
         #endregion
 
