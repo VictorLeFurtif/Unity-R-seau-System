@@ -738,6 +738,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI.NetWorkManagerUI
   connectionPanel: {fileID: 947111577}
   launchGamePanel: {fileID: 1507931894}
+  mainBackground: {fileID: 792121836}
   hostButton: {fileID: 1053612863256982245}
   clientButton: {fileID: 9115933407413456458}
 --- !u!4 &752531213

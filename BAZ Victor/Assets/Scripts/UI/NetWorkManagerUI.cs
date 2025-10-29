@@ -17,6 +17,7 @@ namespace UI
         [Header("Panels")]
         [SerializeField] private GameObject connectionPanel;
         [SerializeField] private GameObject launchGamePanel;
+        [SerializeField] private GameObject mainBackground;
         
         [Header("Buttons")]
         [SerializeField] private Button hostButton;
@@ -100,12 +101,15 @@ namespace UI
             if (connectionPanel != null)
             {
                 connectionPanel.SetActive(true);
+                
             }
             
             if (launchGamePanel != null)
             {
                 launchGamePanel.SetActive(false);
             }
+            
+            mainBackground.SetActive(true);
         }
         
         private void OnLobbyState()
@@ -121,6 +125,7 @@ namespace UI
                 launchGamePanel.SetActive(IsLocalPlayerHost());
             }
             
+            mainBackground.SetActive(false);
         }
         
         private void OnGameState()
@@ -135,6 +140,8 @@ namespace UI
             {
                 launchGamePanel.SetActive(false);
             }
+            
+            mainBackground.SetActive(false);
         }
         
         private void OnGameEndState()
@@ -149,6 +156,8 @@ namespace UI
             {
                 launchGamePanel.SetActive(false);
             }
+            
+            mainBackground.SetActive(false);
         }
 
         private void LaunchGame()
