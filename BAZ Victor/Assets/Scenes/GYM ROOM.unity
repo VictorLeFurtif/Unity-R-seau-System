@@ -637,75 +637,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e033c716bc293047a29d35415db020e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interact.KillZone
---- !u!1001 &643590542
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 182571269281218672, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_TargetTexture
-      value: 
-      objectReference: {fileID: 8400000, guid: f3ec8fd0de58bf6439182ca52874813b, type: 2}
-    - target: {fileID: 4354693911248811447, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 3948497170
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.67659
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -34.27
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7648849269675126358, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8323745074816252234, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_Name
-      value: CAMERA
-      objectReference: {fileID: 0}
-    - target: {fileID: 8514903678014746437, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
-      propertyPath: m_TargetTexture
-      value: 
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: cd0140e86d3fc054a83f79d0deb6eac1, type: 3}
 --- !u!1 &752531211
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,6 +1180,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5668857051166961869, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
   m_PrefabInstance: {fileID: 333561485}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &998870827 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6226132180614797975, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+  m_PrefabInstance: {fileID: 333561485}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a2660b7210a42ccaa75c9048f1a1b43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Manager.PrisonZone
 --- !u!1 &1088115035
 GameObject:
   m_ObjectHideFlags: 0
@@ -1794,6 +1736,7 @@ MonoBehaviour:
   minPlayersToStart: 2
   currentGameState:
     m_InternalValue: 0
+  prison: {fileID: 998870827}
 --- !u!4 &1684573097
 Transform:
   m_ObjectHideFlags: 0
@@ -2742,7 +2685,6 @@ SceneRoots:
   - {fileID: 1589059913}
   - {fileID: 274105719}
   - {fileID: 490118314}
-  - {fileID: 643590542}
   - {fileID: 244597241}
   - {fileID: 885362908}
   - {fileID: 1910433866}

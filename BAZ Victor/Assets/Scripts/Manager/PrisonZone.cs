@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using EventBus;
 using Unity.Netcode;
@@ -19,7 +20,7 @@ namespace Manager
         private Queue<PlayerGameBehavior> prisonerQueue = new Queue<PlayerGameBehavior>();
         [SerializeField] private List<PlayerGameBehavior> hiderReleasing = new List<PlayerGameBehavior>();
 
-
+        private Coroutine checkForEndGame;
         #endregion
 
         #region Unity Methods
@@ -93,6 +94,21 @@ namespace Manager
             }
             
             EventManager.PlayerIsImprisoned();
+            
+            if (checkForEndGame != null)
+            {
+                StopCoroutine(checkForEndGame);
+                checkForEndGame = null;
+            }
+            checkForEndGame = StartCoroutine(CheckIfEndGame(3f));
+        }
+
+        IEnumerator CheckIfEndGame(float time)
+        {
+            yield return new WaitForSeconds(time);
+            GameManager.Instance.CheckIfEndGame(prisonerCount.Value);
+            yield return null;
+            checkForEndGame = null;
         }
         
         private void ResetZoneAfterRelease()

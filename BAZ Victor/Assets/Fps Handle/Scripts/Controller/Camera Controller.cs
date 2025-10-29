@@ -1,82 +1,50 @@
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Fps_Handle.Scripts.Controller
 {
-    public class CameraController : NetworkBehaviour
+    public class CameraController : MonoBehaviour
     {
-        #region Singleton
-
-        public static CameraController Instance { get; private set; }
-
-        #endregion
-
         #region Variable
 
-
-        private Transform orientation;
         [SerializeField] private Transform camHolder;
-
+        [SerializeField] private Camera cameraPlayer;
+        [SerializeField] private GameObject cameraSpeedEffect;
+        
         private float xRotation;
         private float yRotation;
-
-        [FormerlySerializedAs("camera")] [SerializeField] private Camera cameraPlayer;
-
-        [SerializeField] private GameObject cameraSpeedEffect;
         private bool isEffectSpeed = false;
-
-        private Transform currentTarget; 
+        private TweenerCore<Quaternion, Vector3, QuaternionOptions> _tweenerRotationZCamera;
+        private TweenerCore<float, float, FloatOptions> _tweenerFovCamera;
 
         #endregion
 
-        #region Unity Methods
-        
-
-        private void Awake() 
-        {
-            
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            
-            Instance = this;
-        }
+        #region Initialization
 
         private void Start()
         {
             ToggleSpeedCameraEffect(false);
         }
-        
 
-        private void LateUpdate()
+        public void Initialize()
         {
-            if (currentTarget != null)
-            {
-                transform.position = currentTarget.position;
-            }
-        }
-
-        #endregion
-
-        #region Initialization Methods
-
-        
-        
-        
-        public void FollowTarget(Transform target, Transform targetOrientation)
-        {
-            currentTarget = target;
-            orientation = targetOrientation;
-            
             xRotation = 0;
             yRotation = 0;
+        }
+
+        public void SetCameraActive(bool isOwner)
+        {
+            if (cameraPlayer != null)
+            {
+                cameraPlayer.enabled = isOwner;
+                AudioListener listener = cameraPlayer.GetComponent<AudioListener>();
+                if (listener != null)
+                    listener.enabled = isOwner;
+            }
             
+            Debug.Log($"[CameraController] Camera enabled: {isOwner}");
         }
 
         #endregion
@@ -89,24 +57,26 @@ namespace Fps_Handle.Scripts.Controller
             float mouseY = lookInput.y * Time.deltaTime * sensY;
             
             yRotation += mouseX;
-
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90, 90);
             
             if (camHolder != null)
                 camHolder.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-            
+        }
+
+        public void RotateOrientation(Transform orientation)
+        {
             if (orientation != null)
                 orientation.rotation = Quaternion.Euler(0, yRotation, 0);
         }
 
-        public void DoFov(float endValue)
+        public void DoFov(float endValue,float time)
         {
+            _tweenerFovCamera.Kill();
             if (cameraPlayer != null)
-                cameraPlayer.DOFieldOfView(endValue, 0.25f);
+                _tweenerFovCamera = cameraPlayer.DOFieldOfView(endValue, time);
         }
 
-        private TweenerCore<Quaternion, Vector3, QuaternionOptions> _tweenerRotationZCamera;
         public void DoTile(float zTilt)
         {
             _tweenerRotationZCamera.Kill();

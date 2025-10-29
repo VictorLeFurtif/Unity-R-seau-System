@@ -31,6 +31,8 @@ namespace Manager
 
         private NetworkVariable<int> numberConnectedPlayer = new NetworkVariable<int>();
 
+        [SerializeField] private PrisonZone prison;
+
         #endregion
         
         #region Unity Methods
@@ -102,6 +104,14 @@ namespace Manager
             EventManager.GameStateChanged(newState);
         }
 
+        public void CheckIfEndGame(int catchPlayer)
+        {
+            if ((numberConnectedPlayer.Value - 1) ==  catchPlayer)
+            {
+                ChangeGameState(GameState.GameEnd);
+            }
+        }
+
         #endregion
 
         #region Network Callbacks
@@ -160,6 +170,8 @@ namespace Manager
         #endregion
 
         #region Getters
+        
+        public bool CheckIfSeekerWon() => (numberConnectedPlayer.Value - 1) == prison.GetPrisonerCount();
 
         public GameState GetCurrentState() => currentGameState.Value;
         public int GetPlayerCount() => numberConnectedPlayer.Value;

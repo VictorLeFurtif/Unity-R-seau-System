@@ -144,6 +144,8 @@ namespace UI
             mainBackground.SetActive(false);
         }
         
+        
+        //TODO CHECK IF SEKER OR HIDER WON
         private void OnGameEndState()
         {
             
@@ -158,6 +160,15 @@ namespace UI
             }
             
             mainBackground.SetActive(false);
+
+            if (GameManager.Instance.CheckIfSeekerWon())
+            {
+                Debug.Log("Seeker Won");
+            }
+            else
+            {
+                Debug.Log("Hider Won");
+            }
         }
 
         private void LaunchGame()

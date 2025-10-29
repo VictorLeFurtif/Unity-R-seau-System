@@ -20,15 +20,14 @@ namespace Fps_Handle.Scripts.Controller
         private float desiredMoveSpeed;
         private float lastDesiredMoveSpeed;
         
-        [SerializeField] private Transform orientation; //cant change
+        [SerializeField] private Transform orientation;
 
         private float horizontalInput;
         private float verticalInput;
 
         private Vector3 moveDirection;
 
-        [SerializeField] private Rigidbody rb; //cant change
-
+        [SerializeField] private Rigidbody rb;
         [SerializeField] private Collider colliderPlayer;
 
         private MovementState currentMovementState = MovementState.Walking;
@@ -51,17 +50,16 @@ namespace Fps_Handle.Scripts.Controller
         
         private float startYScale;
         
-        [SerializeField] private Transform centerPlayer; //cant change
+        [SerializeField] private Transform centerPlayer;
         private bool readyToJump = true;
 
         private bool grounded;
+        private bool canSlide;
         
         private RaycastHit slopeHit;
         private bool exitingSlope;
         
-        private CameraController cameraController;
-
-        [Header("Camera Effect")] 
+        [SerializeField] private CameraController cameraController;
 
         private PlayerInputActions inputActions;
         private Vector2 moveInput;
@@ -73,44 +71,56 @@ namespace Fps_Handle.Scripts.Controller
         #endregion
 
         #region Unity Method
-        
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            
+    
+            if (cameraController == null)
+            {
+                cameraController = GetComponentInChildren<CameraController>();
+            }
+    
             if (IsOwner)
             {
-                cameraController = CameraController.Instance;
-                
                 ToggleCursor(true);
-                
+        
                 if (cameraController == null)
                 {
-                    Debug.LogError("[PlayerController] CameraController.Instance is null!");
+                    Debug.LogError("[PlayerController] CameraController not found in children!");
                 }
-                CameraController.Instance.FollowTarget(transform,orientation.transform);
-                
+                else
+                {
+                    cameraController.Initialize();
+                    cameraController.SetCameraActive(true);
+                }
+        
                 inputActions = new PlayerInputActions();
-                
+        
                 inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
                 inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
-                
+        
                 inputActions.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
                 inputActions.Player.Look.canceled += ctx => lookInput = Vector2.zero;
-            
+    
                 inputActions.Player.Jump.performed += ctx => jumpPressed = true;
                 inputActions.Player.Jump.canceled += ctx => jumpPressed = false;
-            
+    
                 inputActions.Player.Sprint.performed += ctx => sprintHeld = true;
                 inputActions.Player.Sprint.canceled += ctx => sprintHeld = false;
-            
+    
                 inputActions.Player.Crouch.performed += ctx => OnCrouchPressed();
                 inputActions.Player.Crouch.canceled += ctx => OnCrouchReleased();
-                
+        
                 inputActions.Enable();
             }
-            
+            else
+            {
+                if (cameraController != null)
+                {
+                    cameraController.SetCameraActive(false);  
+                }
+            }
         }
 
         public override void OnNetworkDespawn()
@@ -138,7 +148,11 @@ namespace Fps_Handle.Scripts.Controller
         {
             if (!IsOwner) return;
 
-            CameraController.Instance?.MouseController(lookInput,data.SensX,data.SensY);
+            if (cameraController != null)
+            {
+                cameraController.MouseController(lookInput, data.SensX, data.SensY);
+                cameraController.RotateOrientation(orientation);
+            }
 
             if (!canMove) return;
             
@@ -194,7 +208,7 @@ namespace Fps_Handle.Scripts.Controller
             if (jumpPressed && readyToJump && grounded && currentMovementState != MovementState.Crouching)
             {
                 readyToJump = false;
-                jumpPressed = false; //necessary for cancel space spammer !!
+                jumpPressed = false;
                 Jump();
                 Invoke(nameof(ResetJump), data.JumpCooldown);
             }
@@ -224,15 +238,8 @@ namespace Fps_Handle.Scripts.Controller
 
             if (OnSlope() && !exitingSlope) 
             {
-                
                 rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 10f, ForceMode.Force);
-                
                 rb.useGravity = rb.linearVelocity.y > 0;
-                /*
-                if (rb.linearVelocity.y > 0)
-                {
-                    rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-                }*/
             }
             else if (grounded)
             {
@@ -274,8 +281,6 @@ namespace Fps_Handle.Scripts.Controller
                 }
             }
             
-            
-            
             if (cameraController != null)
             {
                 if (rb.linearVelocity.magnitude > data.SprintSpeed)
@@ -292,10 +297,16 @@ namespace Fps_Handle.Scripts.Controller
             }
         }
 
-        private bool IsGrounded() 
+        public bool IsGrounded() 
         {
             return grounded = Physics.Raycast(transform.position, Vector3.down
                 , data.PlayerHeight * 0.5f + 0.2f, data.GroundLayer);
+        }
+        
+        public bool CanSlide() 
+        {
+            return canSlide = Physics.Raycast(transform.position, Vector3.down
+                , data.PlayerHeight +3f, data.GroundLayer);
         }
 
         private void Drag()
@@ -408,7 +419,7 @@ namespace Fps_Handle.Scripts.Controller
         {
             activeGrapple = false;
             if (cameraController != null)
-                cameraController.DoFov(80f);
+                cameraController.DoFov(80f,0.25f);
         }
         
         public bool OnSlope()
@@ -432,10 +443,8 @@ namespace Fps_Handle.Scripts.Controller
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
-        
-        
-        #endregion
 
+        #endregion
 
         #region Utility
 
@@ -453,6 +462,8 @@ namespace Fps_Handle.Scripts.Controller
         public Rigidbody GetPlayerRigidbody() => rb;
 
         public void SetterCollider(bool _result) => colliderPlayer.enabled = _result;
+        
+        
 
         #endregion
     }

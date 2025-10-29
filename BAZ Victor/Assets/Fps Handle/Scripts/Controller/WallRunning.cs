@@ -28,7 +28,7 @@ namespace Fps_Handle.Scripts.Controller
         [SerializeField] private Transform orientation;
         private PlayerController pc;
         private Rigidbody rb;
-        
+        private CameraController cameraController;
 
         [Header("Exiting")] 
         private bool exitingWall;
@@ -41,7 +41,6 @@ namespace Fps_Handle.Scripts.Controller
         #endregion
 
         #region Unity Methods
-        
 
         public override void OnNetworkSpawn()
         {
@@ -80,8 +79,6 @@ namespace Fps_Handle.Scripts.Controller
                 inputActions = null;
             }
         }
-        
-        
 
         private void Start()
         {
@@ -120,6 +117,13 @@ namespace Fps_Handle.Scripts.Controller
         {
             rb = GetComponent<Rigidbody>();
             pc = GetComponent<PlayerController>();
+            
+            cameraController = GetComponentInChildren<CameraController>();
+            
+            if (cameraController == null)
+            {
+                Debug.LogError("[WallRunning] CameraController not found in children!");
+            }
         }
 
         #endregion
@@ -183,7 +187,6 @@ namespace Fps_Handle.Scripts.Controller
                     exitingWall = false;
                 }
             }
-            
             else
             {
                 if (pc.GetWallRunning())
@@ -201,22 +204,24 @@ namespace Fps_Handle.Scripts.Controller
 
         private void StartWallRunning()
         {
-            jumpPressed = false; // think is necessary because need to press again space to jump?
+            jumpPressed = false;
             wallrunTimer = data.MaxWallRunTime;
             pc.SetterBoolWallRunning(true);
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             
-            CameraController.Instance.DoFov(90f);
-            
-            
-            if (wallLeft)
+            if (cameraController != null)
             {
-                CameraController.Instance.DoTile(-5f);
-            }
+                cameraController.DoFov(90f,0.25f);
+                
+                if (wallLeft)
+                {
+                    cameraController.DoTile(-5f);
+                }
 
-            if (wallRight)
-            {
-                CameraController.Instance.DoTile(5f);
+                if (wallRight)
+                {
+                    cameraController.DoTile(5f);
+                }
             }
 
             if (IsOwner)
@@ -227,8 +232,12 @@ namespace Fps_Handle.Scripts.Controller
 
         private void StopWallRunning()
         {
-            CameraController.Instance.DoFov(80f);
-            CameraController.Instance.DoTile(0);
+            if (cameraController != null)
+            {
+                cameraController.DoFov(80f,0.25f);
+                cameraController.DoTile(0);
+            }
+            
             pc.SetterBoolWallRunning(false);
             
             if (IsOwner)
@@ -244,7 +253,7 @@ namespace Fps_Handle.Scripts.Controller
             Vector3 wallNormal = wallRight ? rightWallhit.normal : leftWallhit.normal;
             Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
 
-            if ((orientation.forward - wallForward).magnitude > (orientation.forward- -wallForward).magnitude)
+            if ((orientation.forward - wallForward).magnitude > (orientation.forward - -wallForward).magnitude)
             {
                 wallForward = -wallForward;
             }
@@ -263,16 +272,16 @@ namespace Fps_Handle.Scripts.Controller
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,-data.WallClimbSpeed, rb.linearVelocity.z);
             }*/
             
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x,data.WallClimbSpeed, rb.linearVelocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, data.WallClimbSpeed, rb.linearVelocity.z);
             
-            if (!(wallLeft && horizontalInput > 0 ) && !(wallRight && horizontalInput < 0 ))
+            if (!(wallLeft && horizontalInput > 0) && !(wallRight && horizontalInput < 0))
             {
-                rb.AddForce(-wallNormal * 100,ForceMode.Force);
+                rb.AddForce(-wallNormal * 100, ForceMode.Force);
             }
 
             if (data.UseGravity)
             {
-                rb.AddForce(transform.up * data.GravityCounterForce,ForceMode.Force);
+                rb.AddForce(transform.up * data.GravityCounterForce, ForceMode.Force);
             }
         }
         
@@ -289,7 +298,7 @@ namespace Fps_Handle.Scripts.Controller
             Vector3 forceToApply = transform.up * data.WallJumpUpForce + wallNormal * data.WallJumpSideForce;
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            rb.AddForce(forceToApply,ForceMode.Impulse);
+            rb.AddForce(forceToApply, ForceMode.Impulse);
         }
 
         #endregion
