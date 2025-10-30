@@ -185,7 +185,6 @@ namespace Manager
             if (IsServer)
             {
                 EventManager.OnPlayerImprisoned += CheckPrisonState;
-                prisonerCount.OnValueChanged += GameManager.Instance.CheckIfEndGame;
             }
           
         }

@@ -116,7 +116,7 @@ namespace Manager
             EventManager.GameStateChanged(newState);
         }
 
-        public void CheckIfEndGame(int oldValue,int newValue)
+        public void CheckIfEndGame()
         {
             
             if ((numberConnectedPlayer.Value - 1) ==  prison.GetPrisonerCount())
@@ -181,6 +181,14 @@ namespace Manager
             ChangeGameState(GameState.InGame);
             timerHiderRunning = true;
             timerWinHider.Value = defaultTimerWinHider;
+        }
+
+        public void ToggleTimerHider(bool _result)
+        {
+            if (IsServer)
+            {
+                timerHiderRunning = _result;
+            }
         }
 
         #endregion

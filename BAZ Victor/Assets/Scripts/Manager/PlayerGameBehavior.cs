@@ -23,6 +23,10 @@ namespace Manager
         private PlayerController pc;
 
         [SerializeField] private NetworkTransform ntTransform;
+        
+        // AJOUT: Référence au Rigidbody et Collider
+        private Rigidbody rb;
+        private Collider playerCollider;
 
         #endregion
 
@@ -31,6 +35,14 @@ namespace Manager
         private void Awake()
         {
             pc = GetComponent<PlayerController>();
+            rb = GetComponent<Rigidbody>();
+            playerCollider = GetComponent<Collider>();
+            
+            // Si le collider est sur un enfant
+            if (playerCollider == null)
+            {
+                playerCollider = GetComponentInChildren<Collider>();
+            }
         }
 
         private void Start()
@@ -53,14 +65,14 @@ namespace Manager
             
             if (prisonGameObject == null)
             {
-                Debug.LogError(" PRISON PAS LAAAAAA");
+                Debug.LogError("PRISON PAS LAAAAAA");
             }
             
             BoxCollider col = prisonGameObject.GetComponent<BoxCollider>();
             
             if (col == null)
             {
-                Debug.LogError(" COLLIDER PAS LAAAAAA");
+                Debug.LogError("COLLIDER PAS LAAAAAA");
             }
             
             prisonMin = col.bounds.min;
@@ -110,32 +122,36 @@ namespace Manager
 
         private IEnumerator TeleportPrisonIe()
         {
-            yield return new WaitForFixedUpdate();
-         
-            pc.ResetVelocity();
+            DisablePhysicsRpc();
             
             yield return new WaitForFixedUpdate();
             
             Vector3 prisonPos = prisonGameObject.transform.position + Vector3.up * 2f;
             transform.position = prisonPos;
-            pc.ResetVelocity();
 
             if (IsOwner)
             {
-                //ADD LATER SECURITY
-                ntTransform.Teleport(prisonPos,Quaternion.identity, Vector3.one);
+                ntTransform.Teleport(prisonPos, Quaternion.identity, Vector3.one);
             }
             
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
             
+            EnablePhysicsRpc();
 
             if (this != null && prisonGameObject != null)
             {
                 PrisonZone prisonZone = prisonGameObject.GetComponent<PrisonZone>();
                 if (prisonZone != null)
                     prisonZone.AddPrisoner(this);
+                
+                GameManager.Instance.ToggleTimerHider(GameManager.Instance.CheckIfSeekerWon());
+                
+                yield return new WaitForFixedUpdate();
+                
+                GameManager.Instance.CheckIfEndGame();
             }
         }
-        
         
         #endregion
 
@@ -144,12 +160,10 @@ namespace Manager
         [Rpc(SendTo.Everyone)]
         private void SetImprisonedRpc(bool value)
         {
-            if (IsServer) //on met a jour que le serv/host vu que c'est une networkVariable
+            if (IsServer)
             {
                 isImprisoned.Value = value;
             }
-    
-            //on met a jour que la pos pour tout le monde en suite
             
             if (value)
             {   
@@ -159,7 +173,28 @@ namespace Manager
             {
                 OnReleasePrison();
             }
-                
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void DisablePhysicsRpc()
+        {
+            rb.isKinematic = true;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            
+            playerCollider.enabled = false;
+            
+            pc.SetterMove(false);
+            
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void EnablePhysicsRpc()
+        {
+            rb.isKinematic = false;
+            playerCollider.enabled = true;
+            pc.SetterMove(true);
+            
         }
 
         #endregion
