@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EventBus;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Manager
 {
@@ -14,7 +15,7 @@ namespace Manager
         private float defaultProgression = 10f;
 
         private NetworkVariable<float> releaseProgression = new NetworkVariable<float>(10f);
-        private NetworkVariable<int> prisonerCount = new NetworkVariable<int>(0);
+        private NetworkVariable<int> prisonerCount = new NetworkVariable<int>(0,NetworkVariableReadPermission.Everyone);
         [SerializeField] private NetworkVariable<bool> releasing = new NetworkVariable<bool>(false);
         
         private Queue<PlayerGameBehavior> prisonerQueue = new Queue<PlayerGameBehavior>();
@@ -30,6 +31,11 @@ namespace Manager
             if (!IsServer) return;  //on met a jour la networkVariable que sur le host/serv
             
             TryReleasingPlayer();
+
+            if (Keyboard.current.uKey.wasPressedThisFrame && IsOwner)
+            {
+                prisonerCount.Value++;
+            }
         }
 
         #endregion
@@ -95,7 +101,7 @@ namespace Manager
             
             EventManager.PlayerIsImprisoned();
             
-            GameManager.Instance.CheckIfEndGame(prisonerCount.Value);
+            //GameManager.Instance.CheckIfEndGame(prisonerCount.Value);
         }
 
         
@@ -179,7 +185,9 @@ namespace Manager
             if (IsServer)
             {
                 EventManager.OnPlayerImprisoned += CheckPrisonState;
+                prisonerCount.OnValueChanged += GameManager.Instance.CheckIfEndGame;
             }
+          
         }
 
         public override void OnNetworkDespawn()

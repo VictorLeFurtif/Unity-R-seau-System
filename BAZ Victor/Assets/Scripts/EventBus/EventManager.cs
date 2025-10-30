@@ -26,6 +26,7 @@ namespace EventBus
         {
             OnPlayerImprisoned?.Invoke();
         }
+        
 
         public static void GameStateChanged(GameState newState)
         {

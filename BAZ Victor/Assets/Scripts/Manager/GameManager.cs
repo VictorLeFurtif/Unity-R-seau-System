@@ -34,8 +34,8 @@ namespace Manager
         [SerializeField] private PrisonZone prison;
 
         [SerializeField] private float defaultTimerWinHider;
-        private NetworkVariable<float> timerWinHider = new NetworkVariable<float>();
-        private bool timerHiderRunning;
+        [SerializeField] private NetworkVariable<float> timerWinHider = new NetworkVariable<float>();
+        private bool timerHiderRunning = false;
 
         #endregion
         
@@ -87,7 +87,7 @@ namespace Manager
 
         private void Update()
         {
-            if (!IsServer || timerHiderRunning) return;
+            if (!IsServer || !timerHiderRunning) return;
             
             timerWinHider.Value -= Time.deltaTime;
 
@@ -116,9 +116,10 @@ namespace Manager
             EventManager.GameStateChanged(newState);
         }
 
-        public void CheckIfEndGame(int catchPlayer)
+        public void CheckIfEndGame(int oldValue,int newValue)
         {
-            if ((numberConnectedPlayer.Value - 1) ==  catchPlayer)
+            
+            if ((numberConnectedPlayer.Value - 1) ==  prison.GetPrisonerCount())
             {
                 ChangeGameState(GameState.GameEnd);
                 timerHiderRunning = false;
@@ -192,7 +193,9 @@ namespace Manager
         public int GetPlayerCount() => numberConnectedPlayer.Value;
         public bool CanStartGame() => connectedPlayerIds.Count >= minPlayersToStart;
 
-        public bool InGame() => currentGameState.Value == GameState.InGame; 
+        public bool InGame() => currentGameState.Value == GameState.InGame;
+
+        public int PlayerInPrison() => prison.GetPrisonerCount();
 
         #endregion
 

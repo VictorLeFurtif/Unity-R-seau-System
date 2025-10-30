@@ -23,6 +23,10 @@ namespace UI
         [SerializeField] private Button hostButton;
         [SerializeField] private Button clientButton;
 
+        [Header("TXT")]
+        [SerializeField] private GameObject txtHiderWon;
+        [SerializeField] private GameObject txtSeekerWon;
+
         #endregion
 
         #region Unity Methods
@@ -101,7 +105,6 @@ namespace UI
             if (connectionPanel != null)
             {
                 connectionPanel.SetActive(true);
-                
             }
             
             if (launchGamePanel != null)
@@ -110,6 +113,8 @@ namespace UI
             }
             
             mainBackground.SetActive(true);
+            txtHiderWon.SetActive(false);
+            txtSeekerWon.SetActive(false);
         }
         
         private void OnLobbyState()
@@ -126,6 +131,8 @@ namespace UI
             }
             
             mainBackground.SetActive(false);
+            txtHiderWon.SetActive(false);
+            txtSeekerWon.SetActive(false);
         }
         
         private void OnGameState()
@@ -142,6 +149,8 @@ namespace UI
             }
             
             mainBackground.SetActive(false);
+            txtHiderWon.SetActive(false);
+            txtSeekerWon.SetActive(false);
         }
         
         
@@ -161,13 +170,18 @@ namespace UI
             
             mainBackground.SetActive(false);
 
+            Debug.Log($"Does seeker won : {GameManager.Instance.CheckIfSeekerWon()} \n" +
+                      $"Hider Count : {GameManager.Instance.GetPlayerCount() - 1} \n" +
+                      $"Player Count : {GameManager.Instance.GetPlayerCount()} \n" +
+                      $"Hider in Prison : {GameManager.Instance.PlayerInPrison()}");
+            
             if (GameManager.Instance.CheckIfSeekerWon())
             {
-                Debug.Log("Seeker Won");
+                txtSeekerWon.SetActive(true);
             }
             else
             {
-                Debug.Log("Hider Won");
+                txtHiderWon.SetActive(true);
             }
         }
 
