@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -7,17 +8,58 @@ namespace Fps_Handle.Scripts.Controller
 {
     public class CameraController : MonoBehaviour
     {
-        #region Variable
+        #region Singleton
 
-        [SerializeField] private Transform camHolder;
+        private static CameraController instance;
+
+        public static CameraController Instance => instance;
+
+        #endregion
+        
+        #region Variable
+        
         [SerializeField] private Camera cameraPlayer;
         [SerializeField] private GameObject cameraSpeedEffect;
         
-        private float xRotation;
-        private float yRotation;
         private bool isEffectSpeed = false;
         private TweenerCore<Quaternion, Vector3, QuaternionOptions> _tweenerRotationZCamera;
         private TweenerCore<float, float, FloatOptions> _tweenerFovCamera;
+        
+        [SerializeField] private Transform cameraHolder;
+        
+        //
+        
+        float yaw;
+        float pitch;
+        float horizontalInput;
+        float verticalInput;
+        
+        [Header("Rotation")]
+       
+        [SerializeField] float verticalLimit = 80f;
+        [SerializeField] float followSmooth  = 15f;
+
+        private PlayerController pc;
+
+        private Transform cameraTarget;
+        
+        
+        #endregion
+        
+        #region Unity Methods
+
+        private void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+            
+        }
 
         #endregion
 
@@ -28,48 +70,47 @@ namespace Fps_Handle.Scripts.Controller
             ToggleSpeedCameraEffect(false);
         }
 
-        public void Initialize()
+        public void Initialize(Transform target)
         {
-            xRotation = 0;
-            yRotation = 0;
+            /*xRotation = 0;
+            yRotation = 0;*/
+            cameraTarget = target;
         }
-
-        public void SetCameraActive(bool isOwner)
-        {
-            if (cameraPlayer != null)
-            {
-                cameraPlayer.enabled = isOwner;
-                AudioListener listener = cameraPlayer.GetComponent<AudioListener>();
-                if (listener != null)
-                    listener.enabled = isOwner;
-            }
-            
-            Debug.Log($"[CameraController] Camera enabled: {isOwner}");
-        }
+        
 
         #endregion
 
         #region Mouse Control
-
-        public void MouseController(Vector2 lookInput, float sensX, float sensY)
+        
+        
+        public void InputMouse(Vector2 lookInput, float sensX, float sensY) 
         {
-            float mouseX = lookInput.x * Time.deltaTime * sensX;
-            float mouseY = lookInput.y * Time.deltaTime * sensY;
-            
-            yRotation += mouseX;
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -90, 90);
-            
-            if (camHolder != null)
-                camHolder.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        }
+            horizontalInput = lookInput.x;
+            verticalInput   = lookInput.y;
 
-        public void RotateOrientation(Transform orientation)
+            float mouseX = lookInput.x * sensX;
+            float mouseY = lookInput.y * sensY;
+
+            yaw   += mouseX;
+            pitch -= mouseY;
+            pitch =  Mathf.Clamp(pitch, -verticalLimit, verticalLimit);
+            
+        }
+        
+        
+        public void MouseController(Transform orientation)
         {
-            if (orientation != null)
-                orientation.rotation = Quaternion.Euler(0, yRotation, 0);
-        }
+		orientation.rotation = Quaternion.Euler(0f, yaw, 0f);
 
+        cameraHolder.transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
+
+        cameraHolder.transform.position = Vector3.Lerp(
+            cameraHolder.transform.position,
+			cameraTarget.position,
+			Time.deltaTime * followSmooth
+		);
+        }
+        
         public void DoFov(float endValue,float time)
         {
             _tweenerFovCamera.Kill();

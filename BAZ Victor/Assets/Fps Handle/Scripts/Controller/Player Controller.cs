@@ -20,7 +20,6 @@ namespace Fps_Handle.Scripts.Controller
         private float desiredMoveSpeed;
         private float lastDesiredMoveSpeed;
         
-        [SerializeField] private Transform orientation;
 
         private float horizontalInput;
         private float verticalInput;
@@ -59,7 +58,7 @@ namespace Fps_Handle.Scripts.Controller
         private RaycastHit slopeHit;
         private bool exitingSlope;
         
-        [SerializeField] private CameraController cameraController;
+        private CameraController cameraController;
 
         private PlayerInputActions inputActions;
         private Vector2 moveInput;
@@ -67,6 +66,10 @@ namespace Fps_Handle.Scripts.Controller
         private bool sprintHeld;
         private bool crouchHeld;
         private Vector2 lookInput;
+
+        [SerializeField] private Transform cameraPosition;
+
+        [SerializeField] private MeshRenderer meshRenderer;
 
         #endregion
 
@@ -78,21 +81,22 @@ namespace Fps_Handle.Scripts.Controller
     
             if (cameraController == null)
             {
-                cameraController = GetComponentInChildren<CameraController>();
+                cameraController = CameraController.Instance;
             }
     
             if (IsOwner)
             {
                 ToggleCursor(true);
-        
+
+                meshRenderer.enabled = false;
+                
                 if (cameraController == null)
                 {
                     Debug.LogError("[PlayerController] CameraController not found in children!");
                 }
                 else
                 {
-                    cameraController.Initialize();
-                    cameraController.SetCameraActive(true);
+                    cameraController.Initialize(cameraPosition);
                 }
         
                 inputActions = new PlayerInputActions();
@@ -113,13 +117,6 @@ namespace Fps_Handle.Scripts.Controller
                 inputActions.Player.Crouch.canceled += ctx => OnCrouchReleased();
         
                 inputActions.Enable();
-            }
-            else
-            {
-                if (cameraController != null)
-                {
-                    cameraController.SetCameraActive(false);  
-                }
             }
         }
 
@@ -149,10 +146,7 @@ namespace Fps_Handle.Scripts.Controller
             if (!IsOwner) return;
 
             if (cameraController != null)
-            {
-                cameraController.MouseController(lookInput, data.SensX, data.SensY);
-                cameraController.RotateOrientation(orientation);
-            }
+                cameraController.InputMouse(lookInput, data.SensX,data.SensY);
 
             if (!canMove) return;
             
@@ -161,6 +155,15 @@ namespace Fps_Handle.Scripts.Controller
             StateHandler();
             Drag();
         }
+
+        private void LateUpdate()
+        {
+            if (!IsOwner) return;
+
+            if (cameraController != null)
+                cameraController.MouseController(transform);
+        }
+
 
         private void FixedUpdate()
         {
@@ -234,7 +237,7 @@ namespace Fps_Handle.Scripts.Controller
                 return;
             }
             
-            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+            moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
 
             if (OnSlope() && !exitingSlope) 
             {
@@ -458,7 +461,7 @@ namespace Fps_Handle.Scripts.Controller
         public bool GetSliding() => sliding;
         public bool GetWallRunning() => wallRunning;
         public MovementState GetMovementState() => currentMovementState;
-        public Transform GetOrientation() => orientation;
+    
         public Rigidbody GetPlayerRigidbody() => rb;
 
         public void SetterCollider(bool _result) => colliderPlayer.enabled = _result;

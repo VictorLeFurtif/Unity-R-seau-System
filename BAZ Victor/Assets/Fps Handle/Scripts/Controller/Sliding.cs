@@ -14,7 +14,6 @@ namespace Fps_Handle.Scripts.Controller
         [SerializeField] private Transform orientation;
         [SerializeField] private Transform playerObj;
         [SerializeField] private SlidingData data;
-        [SerializeField] private CameraController cameraController;
         
         private Rigidbody rb;
         private PlayerController pc;
@@ -138,7 +137,7 @@ namespace Fps_Handle.Scripts.Controller
             if (IsOwner)
             {
                 StartSlideRpc();
-                cameraController.DoFov(100,0.25f);
+                CameraController.Instance.DoFov(100,0.25f);
             }
         }
 
@@ -172,7 +171,7 @@ namespace Fps_Handle.Scripts.Controller
             if (IsOwner)
             {
                 StopSlideRpc();
-                cameraController.DoFov(80,0.25f);
+                CameraController.Instance.DoFov(80,0.25f);
             }
         }
 

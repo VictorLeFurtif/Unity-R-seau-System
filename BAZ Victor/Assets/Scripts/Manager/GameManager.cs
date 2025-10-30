@@ -33,6 +33,10 @@ namespace Manager
 
         [SerializeField] private PrisonZone prison;
 
+        [SerializeField] private float defaultTimerWinHider;
+        private NetworkVariable<float> timerWinHider = new NetworkVariable<float>();
+        private bool timerHiderRunning;
+
         #endregion
         
         #region Unity Methods
@@ -47,6 +51,7 @@ namespace Manager
             Instance = this;
             
             ChangeGameState(GameState.Menu);
+
         }
         
         public override void OnNetworkSpawn()
@@ -61,6 +66,8 @@ namespace Manager
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
 
                 ChangeGameState(GameState.Lobby);
+                
+                timerWinHider.Value = defaultTimerWinHider;
             }
         }
 
@@ -80,9 +87,14 @@ namespace Manager
 
         private void Update()
         {
-            if (Keyboard.current.rKey.wasPressedThisFrame)
+            if (!IsServer || timerHiderRunning) return;
+            
+            timerWinHider.Value -= Time.deltaTime;
+
+            if (timerWinHider.Value <= 0) 
             {
-                Debug.LogWarning("actual game state : " + currentGameState.Value + "\n isServer : " + IsServer);
+                ChangeGameState(GameState.GameEnd);
+                timerHiderRunning = false;
             }
         }
 
@@ -109,6 +121,7 @@ namespace Manager
             if ((numberConnectedPlayer.Value - 1) ==  catchPlayer)
             {
                 ChangeGameState(GameState.GameEnd);
+                timerHiderRunning = false;
             }
         }
 
@@ -165,6 +178,8 @@ namespace Manager
             
             Debug.Log("Launching game!");
             ChangeGameState(GameState.InGame);
+            timerHiderRunning = true;
+            timerWinHider.Value = defaultTimerWinHider;
         }
 
         #endregion

@@ -95,21 +95,9 @@ namespace Manager
             
             EventManager.PlayerIsImprisoned();
             
-            if (checkForEndGame != null)
-            {
-                StopCoroutine(checkForEndGame);
-                checkForEndGame = null;
-            }
-            checkForEndGame = StartCoroutine(CheckIfEndGame(3f));
+            GameManager.Instance.CheckIfEndGame(prisonerCount.Value);
         }
 
-        IEnumerator CheckIfEndGame(float time)
-        {
-            yield return new WaitForSeconds(time);
-            GameManager.Instance.CheckIfEndGame(prisonerCount.Value);
-            yield return null;
-            checkForEndGame = null;
-        }
         
         private void ResetZoneAfterRelease()
         {

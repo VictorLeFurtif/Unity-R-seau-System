@@ -54,10 +54,6 @@ namespace UI
         
         private void UpdateUI()
         {
-            if (!GameManager.Instance.InGame())
-            {
-                return;
-            }
             
             if (prisonerCountText != null)
             {

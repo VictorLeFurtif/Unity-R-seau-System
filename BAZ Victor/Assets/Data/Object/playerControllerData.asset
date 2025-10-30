@@ -29,5 +29,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   <MaxSlopeAngle>k__BackingField: 60
-  <SensX>k__BackingField: 25
-  <SensY>k__BackingField: 25
+  <SensX>k__BackingField: 0.1
+  <SensY>k__BackingField: 0.1

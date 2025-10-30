@@ -25,10 +25,8 @@ namespace Fps_Handle.Scripts.Controller
         private bool wallRight;
 
         [Header("References")]
-        [SerializeField] private Transform orientation;
         private PlayerController pc;
         private Rigidbody rb;
-        private CameraController cameraController;
 
         [Header("Exiting")] 
         private bool exitingWall;
@@ -118,12 +116,7 @@ namespace Fps_Handle.Scripts.Controller
             rb = GetComponent<Rigidbody>();
             pc = GetComponent<PlayerController>();
             
-            cameraController = GetComponentInChildren<CameraController>();
-            
-            if (cameraController == null)
-            {
-                Debug.LogError("[WallRunning] CameraController not found in children!");
-            }
+           
         }
 
         #endregion
@@ -132,9 +125,9 @@ namespace Fps_Handle.Scripts.Controller
 
         private void CheckForWall()
         {
-            wallRight = Physics.Raycast(transform.position, orientation.right,
+            wallRight = Physics.Raycast(transform.position, transform.right,
                 out rightWallhit, data.WallCheckDistance, data.WallLayer);
-            wallLeft = Physics.Raycast(transform.position, -orientation.right, 
+            wallLeft = Physics.Raycast(transform.position, -transform.right, 
                 out leftWallhit, data.WallCheckDistance, data.WallLayer);
         }
 
@@ -209,19 +202,16 @@ namespace Fps_Handle.Scripts.Controller
             pc.SetterBoolWallRunning(true);
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
             
-            if (cameraController != null)
-            {
-                cameraController.DoFov(90f,0.25f);
+            CameraController.Instance.DoFov(90f,0.25f);
                 
-                if (wallLeft)
-                {
-                    cameraController.DoTile(-5f);
-                }
+            if (wallLeft)
+            {
+                CameraController.Instance.DoTile(-15f);
+            }
 
-                if (wallRight)
-                {
-                    cameraController.DoTile(5f);
-                }
+            if (wallRight)
+            {
+                CameraController.Instance.DoTile(15f);
             }
 
             if (IsOwner)
@@ -232,11 +222,8 @@ namespace Fps_Handle.Scripts.Controller
 
         private void StopWallRunning()
         {
-            if (cameraController != null)
-            {
-                cameraController.DoFov(80f,0.25f);
-                cameraController.DoTile(0);
-            }
+            CameraController.Instance.DoFov(80f,0.25f);
+            CameraController.Instance.DoTile(0);
             
             pc.SetterBoolWallRunning(false);
             
@@ -253,7 +240,7 @@ namespace Fps_Handle.Scripts.Controller
             Vector3 wallNormal = wallRight ? rightWallhit.normal : leftWallhit.normal;
             Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
 
-            if ((orientation.forward - wallForward).magnitude > (orientation.forward - -wallForward).magnitude)
+            if ((transform.forward - wallForward).magnitude > (transform.forward - -wallForward).magnitude)
             {
                 wallForward = -wallForward;
             }
