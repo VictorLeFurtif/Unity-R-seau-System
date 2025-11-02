@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Enum;
+using EventBus;
 using Fps_Handle.Scripts.Controller;
 using Unity.Netcode;
 using Unity.Netcode.Components;
@@ -24,7 +25,6 @@ namespace Manager
 
         [SerializeField] private NetworkTransform ntTransform;
         
-        // AJOUT: Référence au Rigidbody et Collider
         private Rigidbody rb;
         private Collider playerCollider;
 
@@ -144,12 +144,6 @@ namespace Manager
                 PrisonZone prisonZone = prisonGameObject.GetComponent<PrisonZone>();
                 if (prisonZone != null)
                     prisonZone.AddPrisoner(this);
-                
-                GameManager.Instance.ToggleTimerHider(GameManager.Instance.CheckIfSeekerWon());
-                
-                yield return new WaitForFixedUpdate();
-                
-                GameManager.Instance.CheckIfEndGame();
             }
         }
         
@@ -204,6 +198,44 @@ namespace Manager
         public bool IsSeeker() => isSeeker.Value;
 
         public bool IsImprisoned() => isImprisoned.Value;
+
+        #endregion
+
+        #region Observer
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            
+            EventManager.OnLobbyEntered += OnLobby;
+            EventManager.OnGameEnded += OnGameEnd;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+            
+            EventManager.OnLobbyEntered -= OnLobby;
+            EventManager.OnGameEnded += OnGameEnd;
+        }
+
+        #endregion
+
+        #region State Game Behavior
+
+        private void OnLobby()
+        {
+            if (IsServer)
+            {
+                isImprisoned.Value = false;
+            }
+            pc.SetterMove(true);
+        }
+
+        private void OnGameEnd()
+        {
+            pc.SetterMove(false);
+        }
 
         #endregion
     }

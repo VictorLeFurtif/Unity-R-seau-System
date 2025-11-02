@@ -17,6 +17,14 @@ namespace EventBus
         public static event Action OnMenu;
 
         public static event Action OnPlayerImprisoned;
+        
+        public static event Action<bool> OnGameEndedWithData; 
+
+        public static void GameEnded(bool seekerWon)
+        {
+            OnGameEndedWithData?.Invoke(seekerWon);
+            OnGameEnded?.Invoke(); 
+        }
 
         #endregion
         

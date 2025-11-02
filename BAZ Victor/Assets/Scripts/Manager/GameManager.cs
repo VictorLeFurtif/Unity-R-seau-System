@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Enum;
 using EventBus;
@@ -21,7 +22,7 @@ namespace Manager
         [Header("Game Settings")]
         [SerializeField] private int minPlayersToStart = 2;
 
-        [SerializeField] private NetworkVariable<GameState> currentGameState = new NetworkVariable<GameState>(
+        private NetworkVariable<GameState> currentGameState = new NetworkVariable<GameState>(
             GameState.Menu,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
@@ -36,6 +37,8 @@ namespace Manager
         [SerializeField] private float defaultTimerWinHider;
         [SerializeField] private NetworkVariable<float> timerWinHider = new NetworkVariable<float>();
         private bool timerHiderRunning = false;
+
+        private Coroutine finishGameCoroutine;
 
         #endregion
         
@@ -68,6 +71,8 @@ namespace Manager
                 ChangeGameState(GameState.Lobby);
                 
                 timerWinHider.Value = defaultTimerWinHider;
+
+                EventManager.OnGameEnded += OnEndGame;
             }
         }
 
@@ -82,19 +87,34 @@ namespace Manager
             {
                 NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
+                
+                EventManager.OnGameEnded -= OnEndGame;
             }
         }
 
+        //TODO CHANGE SYSTEM BY ADDING HERE THE LOGIC
         private void Update()
         {
             if (!IsServer || !timerHiderRunning) return;
-            
+    
             timerWinHider.Value -= Time.deltaTime;
-
+    
             if (timerWinHider.Value <= 0) 
             {
-                ChangeGameState(GameState.GameEnd);
                 timerHiderRunning = false;
+        
+                int prisoners = prison.GetPrisonerCount();
+        
+                if ((numberConnectedPlayer.Value - 1) == prisoners)
+                {
+                    NotifyGameEndClientRpc(true);
+                }
+                else
+                {
+                    NotifyGameEndClientRpc(false);
+                }
+        
+                ChangeGameState(GameState.GameEnd);
             }
         }
 
@@ -106,8 +126,6 @@ namespace Manager
         {
             if (!IsServer) return; 
             
-            //if (currentGameState.Value == newGameState) return; 
-            
             currentGameState.Value = newGameState;
         }
         
@@ -116,13 +134,17 @@ namespace Manager
             EventManager.GameStateChanged(newState);
         }
 
-        public void CheckIfEndGame()
+        public void CheckIfEndGame(int currentPrisonerCount)
         {
-            
-            if ((numberConnectedPlayer.Value - 1) ==  prison.GetPrisonerCount())
+            if ((numberConnectedPlayer.Value - 1) == currentPrisonerCount)
             {
-                ChangeGameState(GameState.GameEnd);
                 timerHiderRunning = false;
+        
+                NotifyGameEndClientRpc(
+                    seekerWon: true
+                );
+        
+                ChangeGameState(GameState.GameEnd);
             }
         }
 
@@ -207,6 +229,21 @@ namespace Manager
 
         #endregion
 
+        #region State Management
+
+        private void OnEndGame()
+        {
+            finishGameCoroutine ??= StartCoroutine(OnEndGameCoroutine());
+        }
+
+        private IEnumerator OnEndGameCoroutine()
+        {
+            yield return new WaitForSeconds(5);
+            ChangeGameState(GameState.Lobby);
+        }
+
+        #endregion
+
         #region Rpc
 
         
@@ -217,6 +254,11 @@ namespace Manager
             EventManager.GameStateChanged(state);
         }
 
+        [ClientRpc]
+        private void NotifyGameEndClientRpc(bool seekerWon)
+        {
+            EventManager.GameEnded(seekerWon);
+        }
 
         #endregion
     }

@@ -85,6 +85,7 @@ namespace UI
             EventManager.OnLobbyEntered += OnLobbyState;
             EventManager.OnGameStarted += OnGameState;
             EventManager.OnGameEnded += OnGameEndState;
+            EventManager.OnGameEndedWithData += OnGameEndStateWithData; 
         }
 
         private void OnDisable()
@@ -93,6 +94,7 @@ namespace UI
             EventManager.OnLobbyEntered -= OnLobbyState;
             EventManager.OnGameStarted -= OnGameState;
             EventManager.OnGameEnded -= OnGameEndState;
+            EventManager.OnGameEndedWithData -= OnGameEndStateWithData;
         }
 
         #endregion
@@ -154,35 +156,35 @@ namespace UI
         }
         
         
-        //TODO CHECK IF SEKER OR HIDER WON
-        private void OnGameEndState()
+        private void OnGameEndStateWithData(bool seekerWon)
         {
-            
             if (connectionPanel != null)
             {
                 connectionPanel.SetActive(false);
             }
-            
+    
             if (launchGamePanel != null)
             {
                 launchGamePanel.SetActive(false);
             }
-            
+    
             mainBackground.SetActive(false);
-
-            Debug.Log($"Does seeker won : {GameManager.Instance.CheckIfSeekerWon()} \n" +
-                      $"Hider Count : {GameManager.Instance.GetPlayerCount() - 1} \n" +
-                      $"Player Count : {GameManager.Instance.GetPlayerCount()} \n" +
-                      $"Hider in Prison : {GameManager.Instance.PlayerInPrison()}");
-            
-            if (GameManager.Instance.CheckIfSeekerWon())
+    
+            if (seekerWon)
             {
                 txtSeekerWon.SetActive(true);
+                txtHiderWon.SetActive(false);
             }
             else
             {
                 txtHiderWon.SetActive(true);
+                txtSeekerWon.SetActive(false);
             }
+        }
+
+        private void OnGameEndState()
+        {
+            Debug.Log("Game ended (legacy event)");
         }
 
         private void LaunchGame()

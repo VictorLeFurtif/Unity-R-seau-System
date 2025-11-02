@@ -31,11 +31,7 @@ namespace Manager
             if (!IsServer) return;  //on met a jour la networkVariable que sur le host/serv
             
             TryReleasingPlayer();
-
-            if (Keyboard.current.uKey.wasPressedThisFrame && IsOwner)
-            {
-                prisonerCount.Value++;
-            }
+            
         }
 
         #endregion
@@ -94,14 +90,14 @@ namespace Manager
             prisonerQueue.Enqueue(prisoner);
             prisonerCount.Value = prisonerQueue.Count;
 
-            if (hiderReleasing.Contains(prisoner)) //was releasing someone
+            if (hiderReleasing.Contains(prisoner)) 
             {
                 hiderReleasing.Remove(prisoner);
             }
             
             EventManager.PlayerIsImprisoned();
             
-            //GameManager.Instance.CheckIfEndGame(prisonerCount.Value);
+            GameManager.Instance.CheckIfEndGame(prisonerQueue.Count);
         }
 
         
