@@ -27,6 +27,8 @@ namespace UI
         [SerializeField] private GameObject txtHiderWon;
         [SerializeField] private GameObject txtSeekerWon;
 
+        [Header("Slider")] [SerializeField] private Slider sliderTimerHider;
+
         #endregion
 
         #region Unity Methods
@@ -39,6 +41,11 @@ namespace UI
         private void Update()
         {
             LaunchGame();
+
+            if (sliderTimerHider.isActiveAndEnabled)
+            {
+                sliderTimerHider.value = GameManager.Instance.GetTimerHider();
+            }
         }
 
         #endregion
@@ -117,6 +124,7 @@ namespace UI
             mainBackground.SetActive(true);
             txtHiderWon.SetActive(false);
             txtSeekerWon.SetActive(false);
+            sliderTimerHider.gameObject.SetActive(false);
         }
         
         private void OnLobbyState()
@@ -135,6 +143,7 @@ namespace UI
             mainBackground.SetActive(false);
             txtHiderWon.SetActive(false);
             txtSeekerWon.SetActive(false);
+            sliderTimerHider.gameObject.SetActive(false);
         }
         
         private void OnGameState()
@@ -153,6 +162,8 @@ namespace UI
             mainBackground.SetActive(false);
             txtHiderWon.SetActive(false);
             txtSeekerWon.SetActive(false);
+            sliderTimerHider.gameObject.SetActive(true);
+            SyncSlider();
         }
         
         
@@ -180,6 +191,8 @@ namespace UI
                 txtHiderWon.SetActive(true);
                 txtSeekerWon.SetActive(false);
             }
+            
+            sliderTimerHider.gameObject.SetActive(false);
         }
 
         private void OnGameEndState()
@@ -202,6 +215,12 @@ namespace UI
         private bool IsLocalPlayerHost()
         {
             return NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost;
+        }
+
+        private void SyncSlider()
+        {
+            sliderTimerHider.maxValue = GameManager.Instance.DefaultValueTimerHider();
+            sliderTimerHider.value = sliderTimerHider.maxValue;
         }
 
         #endregion

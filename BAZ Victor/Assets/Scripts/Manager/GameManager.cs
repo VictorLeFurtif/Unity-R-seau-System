@@ -227,6 +227,10 @@ namespace Manager
 
         public int PlayerInPrison() => prison.GetPrisonerCount();
 
+        public float DefaultValueTimerHider() => defaultTimerWinHider;
+
+        public float GetTimerHider() => timerWinHider.Value;
+
         #endregion
 
         #region State Management
