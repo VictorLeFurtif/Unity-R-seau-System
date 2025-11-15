@@ -146,6 +146,25 @@ namespace Manager
                     prisonZone.AddPrisoner(this);
             }
         }
+
+        private IEnumerator TeleportToPosition(Vector3 targetPosition)
+        {
+            DisablePhysicsRpc();
+    
+            yield return new WaitForFixedUpdate();
+    
+            transform.position = targetPosition;
+
+            if (IsOwner)
+            {
+                ntTransform.Teleport(targetPosition, Quaternion.identity, Vector3.one);
+            }
+    
+            yield return new WaitForFixedUpdate();
+            yield return new WaitForFixedUpdate();
+    
+            EnablePhysicsRpc();
+        }
         
         #endregion
 
@@ -172,9 +191,9 @@ namespace Manager
         [Rpc(SendTo.Everyone)]
         private void DisablePhysicsRpc()
         {
-            rb.isKinematic = true;
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
             
             playerCollider.enabled = false;
             
@@ -187,9 +206,20 @@ namespace Manager
         {
             rb.isKinematic = false;
             playerCollider.enabled = true;
-            pc.SetterMove(true);
             
+            if (!isSeeker.Value || isImprisoned.Value)
+            {
+                pc.SetterMove(true);
+            }
         }
+
+        [Rpc(SendTo.Everyone)]
+        private void TeleportToSpawnPointRpc(Vector3 spawnPosition)
+        {
+            StartCoroutine(TeleportToSpawnAndApplyRestrictions(spawnPosition));
+        }
+
+       
 
         #endregion
 
@@ -209,6 +239,7 @@ namespace Manager
             
             EventManager.OnLobbyEntered += OnLobby;
             EventManager.OnGameEnded += OnGameEnd;
+            EventManager.OnGameStarted += OnGameStart;
         }
 
         public override void OnNetworkDespawn()
@@ -216,7 +247,8 @@ namespace Manager
             base.OnNetworkDespawn();
             
             EventManager.OnLobbyEntered -= OnLobby;
-            EventManager.OnGameEnded += OnGameEnd;
+            EventManager.OnGameEnded -= OnGameEnd;
+            EventManager.OnGameStarted -= OnGameStart;
         }
 
         #endregion
@@ -235,6 +267,36 @@ namespace Manager
         private void OnGameEnd()
         {
             pc.SetterMove(false);
+        }
+
+        private void OnGameStart()
+        {
+            if (IsServer)
+            {
+                Vector3 spawnPos = SpawnManager.Instance.GetSpawnPosition();
+                TeleportToSpawnPointRpc(spawnPos);
+            }
+        }
+
+        #endregion
+        
+        #region Seeker Restriction
+        
+        private IEnumerator TeleportToSpawnAndApplyRestrictions(Vector3 spawnPosition)
+        {
+            yield return StartCoroutine(TeleportToPosition(spawnPosition));
+    
+            if (isSeeker.Value && IsOwner)
+            {
+                yield return StartCoroutine(RestrictionOnGameStartSeeker());
+            }
+        }
+        
+        private IEnumerator RestrictionOnGameStartSeeker()
+        {
+            pc.SetterMove(false);
+            yield return new WaitForSeconds(20);
+            pc.SetterMove(true);
         }
 
         #endregion
