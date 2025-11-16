@@ -6,6 +6,7 @@ using Fps_Handle.Scripts.Controller;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Manager
 {
@@ -52,6 +53,11 @@ namespace Manager
 
         private void Update()
         {
+            if (Keyboard.current.tKey.wasPressedThisFrame)
+            {
+                DebugTp();
+            }
+            
             MovementInPrison();
         }
 
@@ -206,11 +212,12 @@ namespace Manager
         {
             rb.isKinematic = false;
             playerCollider.enabled = true;
-            
+            pc.SetterMove(true);
+            /*
             if (!isSeeker.Value || isImprisoned.Value)
             {
                 pc.SetterMove(true);
-            }
+            }*/
         }
 
         [Rpc(SendTo.Everyone)]
@@ -286,10 +293,10 @@ namespace Manager
         {
             yield return StartCoroutine(TeleportToPosition(spawnPosition));
     
-            if (isSeeker.Value && IsOwner)
-            {
-                yield return StartCoroutine(RestrictionOnGameStartSeeker());
-            }
+          //  if (isSeeker.Value && IsOwner)
+           // {
+             //   yield return StartCoroutine(RestrictionOnGameStartSeeker());
+            //}
         }
         
         private IEnumerator RestrictionOnGameStartSeeker()
@@ -300,5 +307,13 @@ namespace Manager
         }
 
         #endregion
+
+        private void DebugTp()
+        {
+            if (IsServer)
+            {
+                TeleportToSpawnPointRpc(new Vector3(-50.7999992f,75.0899963f,-199.199997f));
+            }
+        }
     }
 }

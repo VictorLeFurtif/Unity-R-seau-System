@@ -19,7 +19,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   <WallRunForce>k__BackingField: 200
-  <MaxWallRunTime>k__BackingField: 1
+  <MaxWallRunTime>k__BackingField: 10
   <WallClimbSpeed>k__BackingField: 2
   <WallJumpUpForce>k__BackingField: 10
   <WallJumpSideForce>k__BackingField: 30
