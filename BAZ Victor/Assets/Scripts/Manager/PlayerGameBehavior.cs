@@ -29,6 +29,13 @@ namespace Manager
         private Rigidbody rb;
         private Collider playerCollider;
 
+        [SerializeField] private LayerMask defaultLayer;
+        [SerializeField] private LayerMask layerMaskXRay;
+        
+        
+        private int layerXray;
+        private int layerDefault;
+
         #endregion
 
         #region Unity Methods
@@ -39,11 +46,13 @@ namespace Manager
             rb = GetComponent<Rigidbody>();
             playerCollider = GetComponent<Collider>();
             
-            // Si le collider est sur un enfant
             if (playerCollider == null)
             {
                 playerCollider = GetComponentInChildren<Collider>();
             }
+            
+            layerXray = LayerMask.NameToLayer("Hider");
+            layerDefault = LayerMask.NameToLayer("Default");
         }
 
         private void Start()
@@ -247,6 +256,7 @@ namespace Manager
             EventManager.OnLobbyEntered += OnLobby;
             EventManager.OnGameEnded += OnGameEnd;
             EventManager.OnGameStarted += OnGameStart;
+            EventManager.OnXray += Xray;
         }
 
         public override void OnNetworkDespawn()
@@ -256,6 +266,7 @@ namespace Manager
             EventManager.OnLobbyEntered -= OnLobby;
             EventManager.OnGameEnded -= OnGameEnd;
             EventManager.OnGameStarted -= OnGameStart;
+            EventManager.OnXray -= Xray;
         }
 
         #endregion
@@ -314,6 +325,43 @@ namespace Manager
             {
                 TeleportToSpawnPointRpc(new Vector3(-50.7999992f,75.0899963f,-199.199997f));
             }
+        }
+
+        private void Xray()
+        {
+            if (!isSeeker.Value && IsServer)
+            {
+                ActivateXrayRpc();
+            }
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void ActivateXrayRpc()
+        {
+            StartCoroutine(XrayCoroutine());
+        }
+
+        private IEnumerator XrayCoroutine()
+        {
+            gameObject.layer = layerXray;
+            
+            Renderer[] renderers = GetComponentsInChildren<Renderer>();
+            
+            foreach (var rend in renderers)
+            {
+                rend.gameObject.layer = layerXray;
+            }
+            
+            
+            yield return new WaitForSeconds(5);
+            
+            gameObject.layer = layerDefault;
+            
+            foreach (var rend in renderers)
+            {
+                rend.gameObject.layer = layerDefault;
+            }
+            
         }
     }
 }

@@ -35,10 +35,16 @@ namespace Manager
         [SerializeField] private PrisonZone prison;
 
         [SerializeField] private float defaultTimerWinHider;
-        [SerializeField] private NetworkVariable<float> timerWinHider = new NetworkVariable<float>();
+        private NetworkVariable<float> timerWinHider = new NetworkVariable<float>();
         private bool timerHiderRunning = false;
+        
+        [SerializeField] private float defaultTimerXray;
+        private NetworkVariable<float> timerXray = new NetworkVariable<float>();
+        
 
         private Coroutine finishGameCoroutine;
+        
+        
 
         #endregion
         
@@ -71,6 +77,7 @@ namespace Manager
                 ChangeGameState(GameState.Lobby);
                 
                 timerWinHider.Value = defaultTimerWinHider;
+                timerXray.Value = defaultTimerXray;
 
                 EventManager.OnGameEnded += OnEndGame;
             }
@@ -96,26 +103,8 @@ namespace Manager
         private void Update()
         {
             if (!IsServer || !timerHiderRunning) return;
-    
-            timerWinHider.Value -= Time.deltaTime;
-    
-            if (timerWinHider.Value <= 0) 
-            {
-                timerHiderRunning = false;
-        
-                int prisoners = prison.GetPrisonerCount();
-        
-                if ((numberConnectedPlayer.Value - 1) == prisoners)
-                {
-                    NotifyGameEndClientRpc(true);
-                }
-                else
-                {
-                    NotifyGameEndClientRpc(false);
-                }
-        
-                ChangeGameState(GameState.GameEnd);
-            }
+            TimerHider();
+            TimerXray();
         }
 
         #endregion
@@ -254,6 +243,44 @@ namespace Manager
 
         #endregion
 
+        #region Timer
+
+        private void TimerHider()
+        {
+            timerWinHider.Value -= Time.deltaTime;
+    
+            if (timerWinHider.Value <= 0) 
+            {
+                timerHiderRunning = false;
+        
+                int prisoners = prison.GetPrisonerCount();
+        
+                if ((numberConnectedPlayer.Value - 1) == prisoners)
+                {
+                    NotifyGameEndClientRpc(true);
+                }
+                else
+                {
+                    NotifyGameEndClientRpc(false);
+                }
+        
+                ChangeGameState(GameState.GameEnd);
+            }
+        }
+
+        private void TimerXray()
+        {
+            timerXray.Value -= Time.deltaTime;
+    
+            if (timerXray.Value <= 0)
+            {
+                timerXray.Value = defaultTimerXray;
+                EventManager.DisplayXray();
+            }
+        }
+
+        #endregion
+
         #region Rpc
 
         
@@ -268,6 +295,12 @@ namespace Manager
         private void NotifyGameEndClientRpc(bool seekerWon)
         {
             EventManager.GameEnded(seekerWon);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void LaunchXrayRpc()
+        {
+            EventManager.DisplayXray();
         }
 
         #endregion

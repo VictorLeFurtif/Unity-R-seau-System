@@ -18,12 +18,19 @@ namespace EventBus
 
         public static event Action OnPlayerImprisoned;
         
-        public static event Action<bool> OnGameEndedWithData; 
+        public static event Action<bool> OnGameEndedWithData;
+
+        public static event Action OnXray;
 
         public static void GameEnded(bool seekerWon)
         {
             OnGameEndedWithData?.Invoke(seekerWon);
             OnGameEnded?.Invoke(); 
+        }
+
+        public static void DisplayXray()
+        {
+            OnXray?.Invoke();
         }
 
         #endregion
