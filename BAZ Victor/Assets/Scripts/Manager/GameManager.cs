@@ -232,7 +232,11 @@ namespace Manager
 
         private void OnEndGame()
         {
-            finishGameCoroutine ??= StartCoroutine(OnEndGameCoroutine());
+            if (finishGameCoroutine != null)
+            {
+                StopCoroutine(finishGameCoroutine);
+            }
+            finishGameCoroutine = StartCoroutine(OnEndGameCoroutine());
         }
 
         private IEnumerator OnEndGameCoroutine()

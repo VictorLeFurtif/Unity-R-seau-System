@@ -197,7 +197,7 @@ namespace UI
 
         private void OnGameEndState()
         {
-            Debug.Log("Game ended (legacy event)");
+            
         }
 
         private void LaunchGame()

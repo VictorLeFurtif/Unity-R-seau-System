@@ -171,6 +171,14 @@ namespace Manager
             }
         }
 
+        private void ClearPrisonAfterGame()
+        {
+            ResetZone();
+            prisonerQueue.Clear();
+            hiderReleasing.Clear();
+            prisonerCount.Value = 0;
+        }
+
         #endregion
 
         #region Observer
@@ -181,6 +189,7 @@ namespace Manager
             if (IsServer)
             {
                 EventManager.OnPlayerImprisoned += CheckPrisonState;
+                EventManager.OnGameEnded += ClearPrisonAfterGame;
             }
           
         }
@@ -192,6 +201,7 @@ namespace Manager
             if (IsServer)
             {
                 EventManager.OnPlayerImprisoned -= CheckPrisonState;
+                EventManager.OnGameEnded -= ClearPrisonAfterGame;
             }
             
         }
