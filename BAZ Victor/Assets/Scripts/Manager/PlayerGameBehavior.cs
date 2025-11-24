@@ -142,7 +142,6 @@ namespace Manager
             yield return new WaitForFixedUpdate();
             
             Vector3 prisonPos = prisonGameObject.transform.position + Vector3.up * 2f;
-            transform.position = prisonPos;
 
             if (IsOwner)
             {
@@ -167,13 +166,10 @@ namespace Manager
             DisablePhysicsRpc();
     
             yield return new WaitForFixedUpdate();
-    
-            //transform.position = targetPosition;
 
             if (IsOwner)
             {
                 ntTransform.Teleport(targetPosition, Quaternion.identity, Vector3.one);
-                //rb.MovePosition(targetPosition);
             }
             
             yield return new WaitForFixedUpdate();
