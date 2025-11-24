@@ -293,7 +293,7 @@ namespace Manager
         }
 
         [ClientRpc]
-        private void NotifyGameEndClientRpc(bool seekerWon)
+        public void NotifyGameEndClientRpc(bool seekerWon)
         {
             EventManager.GameEnded(seekerWon);
         }

@@ -35,6 +35,10 @@ namespace Interact
             if (other.CompareTag("Seeker"))
             {
                 PlayerGameBehavior seeker = GetComponentInParent<PlayerGameBehavior>();
+                if (canKill)
+                {
+                    GameManager.Instance.NotifyGameEndClientRpc(false);
+                }
                 //TODO faire spawn bon endroit
             }
         }
