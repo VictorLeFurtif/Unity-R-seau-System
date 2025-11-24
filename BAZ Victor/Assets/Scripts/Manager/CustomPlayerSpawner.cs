@@ -23,6 +23,7 @@ namespace Manager
 
         private void OnClientConnected(ulong clientId)
         {
+            
             if (!IsOwner)
             {
                 return;

@@ -19,9 +19,6 @@ namespace UI
         [SerializeField] private GameObject launchGamePanel;
         [SerializeField] private GameObject mainBackground;
         
-        [Header("Buttons")]
-        [SerializeField] private Button hostButton;
-        [SerializeField] private Button clientButton;
 
         [Header("TXT")]
         [SerializeField] private GameObject txtHiderWon;
@@ -32,11 +29,7 @@ namespace UI
         #endregion
 
         #region Unity Methods
-
-        private void Awake()
-        {
-            InitButtons();
-        }
+        
 
         private void Update()
         {
@@ -50,17 +43,6 @@ namespace UI
 
         #endregion
 
-        #region Initialization
-
-        private void InitButtons()
-        {
-            if (hostButton != null) hostButton.onClick.AddListener(OnHostClicked);
-            
-            if (clientButton != null) clientButton.onClick.AddListener(OnClientClicked);
-            
-        }
-
-        #endregion
         
         #region Button Callbacks
 

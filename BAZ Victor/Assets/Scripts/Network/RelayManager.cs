@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Enum;
+using Manager;
 using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
@@ -88,6 +90,7 @@ namespace Network
 				NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
 				NetworkManager.Singleton.StartClient();
+				
 			}
 			catch (RelayServiceException e)
 			{
