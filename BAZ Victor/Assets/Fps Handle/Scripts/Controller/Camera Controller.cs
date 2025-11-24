@@ -139,5 +139,11 @@ namespace Fps_Handle.Scripts.Controller
         }
         
         #endregion
+
+        #region Getter Setter
+
+        public Transform CameraTransform() => cameraHolder;
+
+        #endregion
     }
 }

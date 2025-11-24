@@ -1,5 +1,6 @@
 using System;
 using EventBus;
+using Fps_Handle.Scripts.Controller;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -29,6 +30,14 @@ namespace Manager
             inputActions = new PlayerInputActions();
         }
 
+        private void Update()
+        {
+            if (!IsOwner) return;
+
+            Debug.DrawRay(orientation.position, orientation.forward * rangeAttack, Color.red);
+        }
+
+
         #region Observer
 
         public override void OnNetworkSpawn()
@@ -43,6 +52,8 @@ namespace Manager
             
             inputActions.Enable();
             inputActions.Player.Attack.performed +=  Attack;
+
+            orientation = CameraController.Instance.CameraTransform();
         }
 
         public override void OnNetworkDespawn()
@@ -100,7 +111,6 @@ namespace Manager
                 if (hitPlayer != null && !hitPlayer.IsSeeker() && !hitPlayer.IsImprisoned()) 
                 {
                     hitPlayer.SetImprisoned(true);
-                    return;
                 }
             }
         }
