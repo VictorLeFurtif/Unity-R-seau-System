@@ -178,17 +178,14 @@ namespace Manager
         {
             if (!IsServer)
             {
-                Debug.LogWarning("Only server can launch game!");
                 return;
             }
     
             if (connectedPlayerIds.Count < minPlayersToStart)
             {
-                Debug.LogWarning($"Not enough players! Need {minPlayersToStart}, have {connectedPlayerIds.Count}");
                 return;
             }
-    
-            Debug.Log("Launching game!");
+            
     
             if (SpawnManager.Instance != null)
             {

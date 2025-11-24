@@ -168,13 +168,14 @@ namespace Manager
     
             yield return new WaitForFixedUpdate();
     
-            transform.position = targetPosition;
+            //transform.position = targetPosition;
 
             if (IsOwner)
             {
                 ntTransform.Teleport(targetPosition, Quaternion.identity, Vector3.one);
+                //rb.MovePosition(targetPosition);
             }
-    
+            
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
     
@@ -304,16 +305,17 @@ namespace Manager
         {
             yield return StartCoroutine(TeleportToPosition(spawnPosition));
     
-          //  if (isSeeker.Value && IsOwner)
-           // {
-             //   yield return StartCoroutine(RestrictionOnGameStartSeeker());
-            //}
+            if (isSeeker.Value && IsOwner)
+            {
+                yield return StartCoroutine(RestrictionOnGameStartSeeker());
+            }
         }
         
         private IEnumerator RestrictionOnGameStartSeeker()
         {
+            Debug.Log("CCCCCCCCC");
             pc.SetterMove(false);
-            yield return new WaitForSeconds(20);
+            yield return new WaitForSeconds(10);
             pc.SetterMove(true);
         }
 

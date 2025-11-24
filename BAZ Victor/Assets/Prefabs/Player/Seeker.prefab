@@ -243,6 +243,12 @@ MonoBehaviour:
   isSeeker:
     m_InternalValue: 1
   ntTransform: {fileID: 7501909372273627296}
+  defaultLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  layerMaskXRay:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1850851260932578602
 GameObject:
   m_ObjectHideFlags: 0
