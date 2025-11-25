@@ -70,6 +70,7 @@ namespace Fps_Handle.Scripts.Controller
         [SerializeField] private Transform cameraPosition;
 
         [SerializeField] private MeshRenderer meshRenderer;
+        [SerializeField] private MeshRenderer meshRendererFace;
 
         #endregion
 
@@ -89,6 +90,7 @@ namespace Fps_Handle.Scripts.Controller
                 ToggleCursor(true);
 
                 meshRenderer.enabled = false;
+                meshRendererFace.enabled = false;
                 
                 if (cameraController == null)
                 {
