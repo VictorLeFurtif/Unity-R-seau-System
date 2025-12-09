@@ -492,7 +492,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2626221625
+  GlobalObjectIdHash: 153067841
   InScenePlacedSourceGlobalObjectIdHash: 3539160304
   DeferredDespawnTick: 0
   Ownership: 1
@@ -525,6 +525,7 @@ MonoBehaviour:
   cameraPosition: {fileID: 3253341864095161397}
   meshRenderer: {fileID: 5484423888850414316}
   meshRendererFace: {fileID: 1750569632673066959}
+  canUseGrapple: 0
 --- !u!114 &4132525524231295084
 MonoBehaviour:
   m_ObjectHideFlags: 0

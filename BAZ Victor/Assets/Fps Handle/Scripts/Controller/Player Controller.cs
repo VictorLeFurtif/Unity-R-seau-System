@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Controller;
 using Data.Scripts;
 using TMPro;
 using Unity.Netcode;
@@ -71,6 +72,9 @@ namespace Fps_Handle.Scripts.Controller
 
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] private MeshRenderer meshRendererFace;
+        
+        private GrappleSwingSystem grappleSystem;
+        [SerializeField] private bool canUseGrapple = true;
 
         #endregion
 
@@ -117,6 +121,16 @@ namespace Fps_Handle.Scripts.Controller
     
                 inputActions.Player.Crouch.performed += ctx => OnCrouchPressed();
                 inputActions.Player.Crouch.canceled += ctx => OnCrouchReleased();
+
+                if (canUseGrapple)
+                {
+                    grappleSystem = GetComponent<GrappleSwingSystem>();
+
+                    inputActions.Player.Grapple.performed += ctx => grappleSystem.SetGrapplePressed(true);
+                    inputActions.Player.Grapple.canceled += ctx => grappleSystem.SetGrapplePressed(false);
+                }
+                
+                
         
                 inputActions.Enable();
             }
@@ -420,11 +434,9 @@ namespace Fps_Handle.Scripts.Controller
             moveSpeed = desiredMoveSpeed;
         }
 
-        private void ResetRestrictions()
+        public void ResetRestrictions()
         {
             activeGrapple = false;
-            if (cameraController != null)
-                cameraController.DoFov(80f,0.25f);
         }
         
         public bool OnSlope()
@@ -452,6 +464,7 @@ namespace Fps_Handle.Scripts.Controller
         #endregion
 
         #region Utility
+        public bool CanUseGrapple => canUseGrapple;
 
         public void SetterMove(bool value)
         {
@@ -468,7 +481,11 @@ namespace Fps_Handle.Scripts.Controller
 
         public void SetterCollider(bool _result) => colliderPlayer.enabled = _result;
         
-        
+        public void SetActiveGrapple(bool value)
+        {
+            activeGrapple = value;
+        }
+
 
         #endregion
     }
