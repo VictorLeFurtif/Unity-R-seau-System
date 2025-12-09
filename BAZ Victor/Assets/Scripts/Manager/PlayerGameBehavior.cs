@@ -60,6 +60,8 @@ namespace Manager
         private void Start()
         {
             InitComponent();
+
+            
         }
 
         private void Update()
@@ -227,6 +229,12 @@ namespace Manager
             EventManager.OnGameEnded += OnGameEnd;
             EventManager.OnGameStarted += OnGameStart;
             EventManager.OnXray += Xray;
+            
+            if (IsServer)
+            {
+                Vector3 spawnPos = SpawnManager.Instance.GetSpawnPosition(true);
+                TeleportToSpawnPointClientRpc(spawnPos, true);
+            }
         }
 
         public override void OnNetworkDespawn()
@@ -260,9 +268,11 @@ namespace Manager
         private IEnumerator OnGameEndIe()
         {
             yield return new WaitForSeconds(2);
-            
-            Vector3 spawnPos = SpawnManager.Instance.GetSpawnPosition(true);
-            TeleportToSpawnPointClientRpc(spawnPos, true);
+            if (IsServer)
+            {
+                Vector3 spawnPos = SpawnManager.Instance.GetSpawnPosition(true);
+                TeleportToSpawnPointClientRpc(spawnPos, true);
+            }
         }
 
         private void OnGameStart()
@@ -286,6 +296,8 @@ namespace Manager
        
 
         #endregion
+
+        #region Xray
 
         private void Xray()
         {
@@ -321,5 +333,9 @@ namespace Manager
                 rend.gameObject.layer = layerDefault;
             }
         }
+
+        #endregion
+
+        //TP SPAWN START
     }
 }

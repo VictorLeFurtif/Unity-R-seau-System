@@ -32,6 +32,7 @@ namespace Manager
                 return;
             }
             Instance = this;
+            
         }
         
         #endregion
@@ -52,6 +53,11 @@ namespace Manager
         public Vector3 GetSpawnPosition(bool toLobby)
         {
             if (!IsServer)return Vector3.zero;
+            
+            if (availableSpawnIndices.Count == 0)
+            {
+                InitializeSpawns(); 
+            }
             
             int randomIndex = Random.Range(0, availableSpawnIndices.Count);
             int spawnIndex = availableSpawnIndices[randomIndex];
