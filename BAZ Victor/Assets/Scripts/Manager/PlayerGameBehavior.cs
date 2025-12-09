@@ -89,8 +89,12 @@ namespace Manager
                 return;
             }
             
-            prisonMin = col.bounds.min;
-            prisonMax = col.bounds.max;
+            prisonMin.x = col.bounds.min.x;
+            prisonMin.z = col.bounds.min.z;
+            prisonMin.y = col.bounds.min.y;
+            prisonMax.y = col.bounds.max.y + 5;
+            prisonMax.x = col.bounds.max.x;
+            prisonMax.z = col.bounds.max.z;
         }
 
         #endregion
@@ -129,6 +133,7 @@ namespace Manager
             Vector3 newPos = transform.position;
                 
             newPos.x = Mathf.Clamp(newPos.x, prisonMin.x, prisonMax.x);
+            newPos.y = Mathf.Clamp(newPos.y, prisonMin.y, prisonMax.y);
             newPos.z = Mathf.Clamp(newPos.z, prisonMin.z, prisonMax.z);
             
             transform.position = newPos;
@@ -162,6 +167,7 @@ namespace Manager
         private IEnumerator TeleportToPositionCoroutine(Vector3 targetPosition, bool toPrison)
         {
             isTeleporting = true;
+            pc.enabled = false;
             
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -174,15 +180,13 @@ namespace Manager
             {
                 ntTransform.Teleport(targetPosition, Quaternion.identity, Vector3.one);
             }
-            else
-            {
-                transform.position = targetPosition;
-            }
             
+            yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
             
             rb.isKinematic = false;
             playerCollider.enabled = true;
+            pc.enabled = true;
             
             isTeleporting = false;
         }
