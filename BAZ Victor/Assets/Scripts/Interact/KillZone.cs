@@ -8,7 +8,6 @@ namespace Interact
 {
     public class KillZone : MonoBehaviour
     {
-
         #region Fields
 
         private bool canKill;
@@ -19,27 +18,42 @@ namespace Interact
 
         private void OnTriggerEnter(Collider other)
         {
+            if (!NetworkManager.Singleton.IsServer) return;
+            
             if (other.CompareTag("Hider"))
             {
-                PlayerGameBehavior hider = GetComponentInParent<PlayerGameBehavior>();
-                if (canKill)
+                PlayerGameBehavior hider = other.GetComponentInParent<PlayerGameBehavior>();
+                
+                if (hider == null) 
+                    hider = other.GetComponent<PlayerGameBehavior>();
+                
+                if (hider != null && canKill && !hider.IsImprisoned())
                 {
-                    hider.SetImprisoned(true);
-                }
-                else
-                {
-                    //hider.transform.position
+                    if (GameManager.Instance.CheckIfAddPrisonnerEndGame())
+                    {
+                        Debug.Log("1");
+                        GameManager.Instance.NotifyGameEndClientRpc(true);
+                    }
+                    else
+                    {
+                        Debug.Log("2");
+                        hider.SetImprisoned(true);
+                    }
+                    
                 }
             }
 
             if (other.CompareTag("Seeker"))
             {
-                PlayerGameBehavior seeker = GetComponentInParent<PlayerGameBehavior>();
-                if (canKill)
+                PlayerGameBehavior seeker = other.GetComponentInParent<PlayerGameBehavior>();
+                
+                if (seeker == null) 
+                    seeker = other.GetComponent<PlayerGameBehavior>();
+                
+                if (seeker != null && canKill && seeker.IsSpawned)
                 {
                     GameManager.Instance.NotifyGameEndClientRpc(false);
                 }
-                //TODO faire spawn bon endroit
             }
         }
 

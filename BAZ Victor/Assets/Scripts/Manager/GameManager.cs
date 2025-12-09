@@ -209,7 +209,8 @@ namespace Manager
 
         #region Getters
         
-        public bool CheckIfSeekerWon() => (numberConnectedPlayer.Value - 1) == prison.GetPrisonerCount();
+        public bool CheckIfAddPrisonnerEndGame() => (numberConnectedPlayer.Value - 1) == prison.GetPrisonerCount() + 1;
+
 
         public GameState GetCurrentState() => currentGameState.Value;
         public int GetPlayerCount() => numberConnectedPlayer.Value;
@@ -229,11 +230,12 @@ namespace Manager
 
         private void OnEndGame()
         {
-            if (finishGameCoroutine != null)
-            {
-                StopCoroutine(finishGameCoroutine);
-            }
+            if (SpawnManager.Instance != null) SpawnManager.Instance.InitializeSpawns();
+            
+            if (finishGameCoroutine != null) StopCoroutine(finishGameCoroutine);
+            
             finishGameCoroutine = StartCoroutine(OnEndGameCoroutine());
+            
         }
 
         private IEnumerator OnEndGameCoroutine()
@@ -271,6 +273,12 @@ namespace Manager
 
         private void TimerXray()
         {
+            if (currentGameState.Value != GameState.InGame)
+            {
+                return;
+            }
+            
+            
             timerXray.Value -= Time.deltaTime;
     
             if (timerXray.Value <= 0)

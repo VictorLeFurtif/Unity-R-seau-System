@@ -15,7 +15,8 @@ namespace Manager
         #region Fields
 
         [SerializeField] private NetworkVariable<bool> isSeeker = new NetworkVariable<bool>(false);
-        private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>(false);
+        private NetworkVariable<bool> isImprisoned = new NetworkVariable<bool>
+            (false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         
         private GameObject prisonGameObject;
         
@@ -32,9 +33,10 @@ namespace Manager
         [SerializeField] private LayerMask defaultLayer;
         [SerializeField] private LayerMask layerMaskXRay;
         
-        
         private int layerXray;
         private int layerDefault;
+
+        private bool isTeleporting = false;
 
         #endregion
 
@@ -62,11 +64,6 @@ namespace Manager
 
         private void Update()
         {
-            if (Keyboard.current.tKey.wasPressedThisFrame)
-            {
-                DebugTp();
-            }
-            
             MovementInPrison();
         }
 
@@ -81,6 +78,7 @@ namespace Manager
             if (prisonGameObject == null)
             {
                 Debug.LogError("PRISON PAS LAAAAAA");
+                return;
             }
             
             BoxCollider col = prisonGameObject.GetComponent<BoxCollider>();
@@ -88,6 +86,7 @@ namespace Manager
             if (col == null)
             {
                 Debug.LogError("COLLIDER PAS LAAAAAA");
+                return;
             }
             
             prisonMin = col.bounds.min;
@@ -100,20 +99,23 @@ namespace Manager
         
         public void SetImprisoned(bool value)
         {
-            SetImprisonedRpc(value);
-        }
-        
-        private void OnCapturePrison()
-        {
-            StartCoroutine(TeleportPrisonIe());
+            if (!IsServer) return;
+            
+            isImprisoned.Value = value;
+            
+            if (value)
+            {
+                TeleportToPrisonServerRpc();
+            }
+            else
+            {
+                OnReleasePrisonClientRpc();
+            }
         }
 
         private void OnReleasePrison()
         {
-            if (IsOwner)
-            {
-                //pc.SetterMove(true);
-            }
+            
         }
 
         #endregion
@@ -122,117 +124,84 @@ namespace Manager
 
         private void MovementInPrison()
         {
-            if (!IsOwner || isSeeker.Value || !IsImprisoned()) return;
+            if (!IsOwner || isSeeker.Value || !IsImprisoned() || isTeleporting) return;
             
             Vector3 newPos = transform.position;
                 
             newPos.x = Mathf.Clamp(newPos.x, prisonMin.x, prisonMax.x);
             newPos.z = Mathf.Clamp(newPos.z, prisonMin.z, prisonMax.z);
-            gameObject.transform.localPosition = newPos;
+            
+            transform.position = newPos;
         }
 
         #endregion
 
         #region Teleport In Prison
 
-        private IEnumerator TeleportPrisonIe()
+        [Rpc(SendTo.Server)]
+        private void TeleportToPrisonServerRpc()
         {
-            DisablePhysicsRpc();
-            
-            yield return new WaitForFixedUpdate();
-            
-            Vector3 prisonPos = prisonGameObject.transform.position + Vector3.up * 2f;
-
-            if (IsOwner)
-            {
-                ntTransform.Teleport(prisonPos, Quaternion.identity, Vector3.one);
-            }
-            
-            yield return new WaitForFixedUpdate();
-            yield return new WaitForFixedUpdate();
-            
-            EnablePhysicsRpc();
-
-            if (this != null && prisonGameObject != null)
+            if (prisonGameObject != null)
             {
                 PrisonZone prisonZone = prisonGameObject.GetComponent<PrisonZone>();
                 if (prisonZone != null)
                     prisonZone.AddPrisoner(this);
             }
+
+            Vector3 prisonPos = prisonGameObject.transform.position + Vector3.up * 2f;
+            TeleportToPositionClientRpc(prisonPos, true);
         }
 
-        private IEnumerator TeleportToPosition(Vector3 targetPosition)
+        [Rpc(SendTo.Owner)]
+        private void TeleportToPositionClientRpc(Vector3 targetPosition, bool toPrison)
         {
-            DisablePhysicsRpc();
-    
+            if (!IsOwner) return;
+            StartCoroutine(TeleportToPositionCoroutine(targetPosition, toPrison));
+        }
+
+        private IEnumerator TeleportToPositionCoroutine(Vector3 targetPosition, bool toPrison)
+        {
+            isTeleporting = true;
+            
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+            playerCollider.enabled = false;
+            
             yield return new WaitForFixedUpdate();
 
-            if (IsOwner)
+            if (ntTransform != null)
             {
                 ntTransform.Teleport(targetPosition, Quaternion.identity, Vector3.one);
             }
+            else
+            {
+                transform.position = targetPosition;
+            }
             
             yield return new WaitForFixedUpdate();
-            yield return new WaitForFixedUpdate();
-    
-            EnablePhysicsRpc();
+            
+            rb.isKinematic = false;
+            playerCollider.enabled = true;
+            
+            isTeleporting = false;
         }
         
         #endregion
 
         #region RPC
 
-        [Rpc(SendTo.Everyone)]
-        private void SetImprisonedRpc(bool value)
+        [Rpc(SendTo.Owner)]
+        private void OnReleasePrisonClientRpc()
         {
-            if (IsServer)
-            {
-                isImprisoned.Value = value;
-            }
-            
-            if (value)
-            {   
-                OnCapturePrison();
-            }
-            else
-            {
-                OnReleasePrison();
-            }
+            OnReleasePrison();
         }
 
-        [Rpc(SendTo.Everyone)]
-        private void DisablePhysicsRpc()
+        [Rpc(SendTo.Owner)]
+        private void TeleportToSpawnPointClientRpc(Vector3 spawnPosition, bool isLobby)
         {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-            rb.isKinematic = true;
-            
-            playerCollider.enabled = false;
-            
-            pc.SetterMove(false);
-            
+            StartCoroutine(TeleportToSpawnAndApplyRestrictions(spawnPosition, isLobby));
         }
-
-        [Rpc(SendTo.Everyone)]
-        private void EnablePhysicsRpc()
-        {
-            rb.isKinematic = false;
-            playerCollider.enabled = true;
-            pc.SetterMove(true);
-            /*
-            if (!isSeeker.Value || isImprisoned.Value)
-            {
-                pc.SetterMove(true);
-            }*/
-        }
-
-        [Rpc(SendTo.Everyone)]
-        private void TeleportToSpawnPointRpc(Vector3 spawnPosition)
-        {
-            StartCoroutine(TeleportToSpawnAndApplyRestrictions(spawnPosition));
-        }
-
-       
 
         #endregion
 
@@ -272,24 +241,32 @@ namespace Manager
 
         private void OnLobby()
         {
-            if (IsServer)
-            {
-                isImprisoned.Value = false;
-            }
-            pc.SetterMove(true);
+           
         }
 
         private void OnGameEnd()
         {
-            pc.SetterMove(false);
+            if (IsServer)
+            {
+                isImprisoned.Value = false;
+                StartCoroutine(OnGameEndIe());
+            }
+        }
+
+        private IEnumerator OnGameEndIe()
+        {
+            yield return new WaitForSeconds(2);
+            
+            Vector3 spawnPos = SpawnManager.Instance.GetSpawnPosition(true);
+            TeleportToSpawnPointClientRpc(spawnPos, true);
         }
 
         private void OnGameStart()
         {
             if (IsServer)
             {
-                Vector3 spawnPos = SpawnManager.Instance.GetSpawnPosition();
-                TeleportToSpawnPointRpc(spawnPos);
+                Vector3 spawnPos = SpawnManager.Instance.GetSpawnPosition(false);
+                TeleportToSpawnPointClientRpc(spawnPos, false);
             }
         }
 
@@ -297,44 +274,25 @@ namespace Manager
         
         #region Seeker Restriction
         
-        private IEnumerator TeleportToSpawnAndApplyRestrictions(Vector3 spawnPosition)
+        private IEnumerator TeleportToSpawnAndApplyRestrictions(Vector3 spawnPosition, bool isLobby)
         {
-            yield return StartCoroutine(TeleportToPosition(spawnPosition));
-    
-            if (isSeeker.Value && IsOwner)
-            {
-                yield return StartCoroutine(RestrictionOnGameStartSeeker());
-            }
+            yield return StartCoroutine(TeleportToPositionCoroutine(spawnPosition, false));
+            
         }
-        
-        private IEnumerator RestrictionOnGameStartSeeker()
-        {
-            Debug.Log("CCCCCCCCC");
-            pc.SetterMove(false);
-            yield return new WaitForSeconds(10);
-            pc.SetterMove(true);
-        }
+       
 
         #endregion
-
-        private void DebugTp()
-        {
-            if (IsServer)
-            {
-                TeleportToSpawnPointRpc(new Vector3(-50.7999992f,75.0899963f,-199.199997f));
-            }
-        }
 
         private void Xray()
         {
             if (!isSeeker.Value && IsServer)
             {
-                ActivateXrayRpc();
+                ActivateXrayClientRpc();
             }
         }
 
         [Rpc(SendTo.Everyone)]
-        private void ActivateXrayRpc()
+        private void ActivateXrayClientRpc()
         {
             StartCoroutine(XrayCoroutine());
         }
@@ -350,7 +308,6 @@ namespace Manager
                 rend.gameObject.layer = layerXray;
             }
             
-            
             yield return new WaitForSeconds(5);
             
             gameObject.layer = layerDefault;
@@ -359,7 +316,6 @@ namespace Manager
             {
                 rend.gameObject.layer = layerDefault;
             }
-            
         }
     }
 }

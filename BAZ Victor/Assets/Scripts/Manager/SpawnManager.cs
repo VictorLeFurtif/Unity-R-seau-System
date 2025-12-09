@@ -15,7 +15,8 @@ namespace Manager
         #region Fields
         
         [Header("Spawn Points")]
-        [SerializeField] private Transform[] spawnPoints = new Transform[8]; 
+        [SerializeField] private Transform[] spawnPointsInGame = new Transform[8]; 
+        [SerializeField] private Transform[] spawnPointsLobby = new Transform[8]; 
         
         private List<int> availableSpawnIndices = new List<int>();
         
@@ -42,25 +43,22 @@ namespace Manager
             if (!IsServer) return;
             
             availableSpawnIndices.Clear();
-            for (int i = 0; i < spawnPoints.Length; i++)
+            for (int i = 0; i < spawnPointsInGame.Length; i++)
             {
                 availableSpawnIndices.Add(i);
             }
         }
         
-        public Vector3 GetSpawnPosition()
+        public Vector3 GetSpawnPosition(bool toLobby)
         {
-            if (!IsServer)
-            {
-                return Vector3.zero;
-            }
+            if (!IsServer)return Vector3.zero;
             
             int randomIndex = Random.Range(0, availableSpawnIndices.Count);
             int spawnIndex = availableSpawnIndices[randomIndex];
             
             availableSpawnIndices.RemoveAt(randomIndex);
             
-            return spawnPoints[spawnIndex].position;
+            return toLobby ? spawnPointsLobby[spawnIndex].position : spawnPointsInGame[spawnIndex].position;
         }
         
         #endregion

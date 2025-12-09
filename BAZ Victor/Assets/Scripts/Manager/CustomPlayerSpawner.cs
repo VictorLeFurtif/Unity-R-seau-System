@@ -35,6 +35,7 @@ namespace Manager
 
             var playerInstance = Instantiate(prefabToSpawn);
             playerInstance.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+            
         }
     }
 }
