@@ -173,6 +173,9 @@ namespace Manager
             
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            
+            yield return new WaitForFixedUpdate();
+            
             rb.isKinematic = true;
             playerCollider.enabled = false;
             
@@ -336,6 +339,5 @@ namespace Manager
 
         #endregion
 
-        //TP SPAWN START
     }
 }
