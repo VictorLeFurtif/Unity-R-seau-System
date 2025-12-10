@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Controller;
 using Data.Scripts;
 using TMPro;
 using Unity.Netcode;
