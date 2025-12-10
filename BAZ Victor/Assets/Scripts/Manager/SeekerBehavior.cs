@@ -30,13 +30,7 @@ namespace Manager
             inputActions = new PlayerInputActions();
         }
 
-        private void Update()
-        {
-            if (!IsOwner) return;
-
-            Debug.DrawRay(orientation.position, orientation.forward * rangeAttack, Color.red);
-        }
-
+        
 
         #region Observer
 
@@ -104,7 +98,9 @@ namespace Manager
             isAttacking = true;
             Invoke(nameof(ResetAttack),attackResetTime);
             
-            if (Physics.Raycast(orientation.position, orientation.forward, out hit, rangeAttack, ~seekerLayer))
+            const float radius = 0.8f; 
+            
+            if (Physics.SphereCast(orientation.position, radius, orientation.forward, out hit, rangeAttack, ~seekerLayer))
             {
                 PlayerGameBehavior hitPlayer = hit.transform.GetComponent<PlayerGameBehavior>();
                 

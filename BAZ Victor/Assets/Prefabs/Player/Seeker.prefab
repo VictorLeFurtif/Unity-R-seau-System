@@ -85,7 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2285894347
+  GlobalObjectIdHash: 1343591389
   InScenePlacedSourceGlobalObjectIdHash: 3539160304
   DeferredDespawnTick: 0
   Ownership: 1
@@ -227,7 +227,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   orientation: {fileID: 569250092834813813}
   rangeAttack: 3
-  attackResetTime: 0.5
+  attackResetTime: 0.01
   seekerLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7909a077cef441facf834d90a28ca99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Controller.GrappleSwingSystem
+  ShowTopMostFoldoutHeaderGroup: 1
   rope: {fileID: 4670530789903774502}
   gunTip: {fileID: 1534790676848411878}
   player: {fileID: 5410798822002630284}
@@ -280,7 +281,6 @@ MonoBehaviour:
   horizontalThrust: 375
   forwardThrust: 625
   extendSpeed: 2
-  predictionRadius: 1
 --- !u!120 &4670530789903774502
 LineRenderer:
   serializedVersion: 2
