@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
@@ -37,6 +38,13 @@ public class GrappleSwingSystem : NetworkBehaviour
     private void OnEnable()
     {
         cam = CameraController.Instance.CameraTransform();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        rope.positionCount = 0;
+        rope.enabled = true; 
     }
 
     private void Awake()

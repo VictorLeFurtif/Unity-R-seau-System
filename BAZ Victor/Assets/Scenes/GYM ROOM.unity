@@ -4746,12 +4746,32 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4259415541373745245, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_fontSize
+      value: 24.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4259415541373745245, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_margin.x
       value: -110.777405
       objectReference: {fileID: 0}
     - target: {fileID: 4259415541373745245, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_margin.z
       value: 8.278595
+      objectReference: {fileID: 0}
+    - target: {fileID: 4259415541373745245, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: dbb88f24eddecc4468c86e347c1bff04, type: 2}
+    - target: {fileID: 4259415541373745245, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 24.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4259415541373745245, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4383042491840878166, guid: dbb88f24eddecc4468c86e347c1bff04, type: 2}
+    - target: {fileID: 4259415541373745245, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4429070593064209439, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_Color.b
@@ -4848,6 +4868,14 @@ PrefabInstance:
     - target: {fileID: 6508260163044316520, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_TargetGraphic
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6801589166852763993, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 203.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6801589166852763993, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 24.5
       objectReference: {fileID: 0}
     - target: {fileID: 6801589166852763993, guid: 7f289cf8daab24a44b46b2430277ffc2, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -10261,7 +10289,7 @@ MonoBehaviour:
   m_text: 'HIDER WON '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dbb88f24eddecc4468c86e347c1bff04, type: 2}
-  m_sharedMaterial: {fileID: 3225470281623677288, guid: 72477e3644d78bf42ada12a58ee08ae0, type: 2}
+  m_sharedMaterial: {fileID: 4383042491840878166, guid: dbb88f24eddecc4468c86e347c1bff04, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -25660,7 +25688,7 @@ MonoBehaviour:
   m_text: 'SEEKER WON '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dbb88f24eddecc4468c86e347c1bff04, type: 2}
-  m_sharedMaterial: {fileID: 3225470281623677288, guid: 72477e3644d78bf42ada12a58ee08ae0, type: 2}
+  m_sharedMaterial: {fileID: 4383042491840878166, guid: dbb88f24eddecc4468c86e347c1bff04, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
