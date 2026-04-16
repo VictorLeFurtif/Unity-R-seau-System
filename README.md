@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/TYPE-MULTIPLAYER-orange?style=flat-square">
   <img src="https://img.shields.io/badge/NETWORK-NETCODE_FOR_UNITY-white?style=flat-square">
   <img src="https://img.shields.io/badge/GENRE-ARCADE_RUNNER-blue?style=flat-square">
+  <img src="https://img.shields.io/badge/2nd Year-green?style=flat-square">
 </p>
 
 ---
