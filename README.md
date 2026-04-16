@@ -41,7 +41,7 @@ Le jeu repose sur un cycle de poursuite dynamique :
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=w7aODNw3CzM">
-    <img src="https://img.youtube.com/vi/w7aODNw3CzM/0.jpg" alt="Regarder la vidéo de Don't Get Caught" width="600">
+    <img src="https://img.youtube.com/vi/w7aODNw3CzM/0.jpg" alt="Regarder la vidéo de Don't Get Caught" width="400">
   </a>
 </p>
 
