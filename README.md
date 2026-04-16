@@ -9,7 +9,7 @@
 ---
 
 ## CONCEPT
-Inspiré du mode *Runners* de Garry's Mod, **Don't Get Caught** est un jeu multijoueur asymétrique opposant un Chasseur à plusieurs Souris. Le projet a été conçu pour tester les capacités de synchronisation réseau de **Unity NetCode** dans un environnement à haute vélocité.
+Inspiré du mode *Runners* de Garry's Mod, **Don't Get Caught** est un jeu multijoueur asymétrique opposant un Chasseur à plusieurs Souris. Le projet a été conçu pour tester les capacités de synchronisation réseau de **Unity NetCode**.
 
 ---
 
